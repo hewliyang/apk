@@ -5,7 +5,7 @@ ResponseType = { SIMPLE, DETAILED }
 CompanyType = { startup, private }
 OrderDirection = { asc, desc }
 OrderBy = { name, id, no_of_invested_companies }
-CountryCode = { SGP, MYS, IDN, THA, VNM, AUS, PHL }
+CountryCode = { SGP, MYS, IDN, THA, VNM, AUS, PHL, ... } // typical ISO3 codes
 CapitalProviderCategory = { fund-manager, limited-partner, family-office }
 FundStatus = { Open, Open - Without first close, Open - With first close, Closed, Evergreen, Upcoming }
 PersonOrderBy = { id, first_name, last_name }
@@ -15,8 +15,6 @@ FundPerformanceOrderBy = { dpi, irr }
 CommitmentDealOrderBy = { fund_manager_name }
 
 [altpe_sdk.models]
-BaseApiModel
-BaseApiModel
 Sector: { id: int, name: str }
 Theme: { id: int, name: str }
 Founder: { id: int, name: str, linkedin_url: Optional[str], email: Optional[str], hashed_name: Optional[str] }
@@ -75,7 +73,7 @@ CommitmentDealResponse: { data: CommitmentDeal }
 PersonListResponse: { total_records: int, limit: int, offset: int, data: list[Person] }
 PersonResponse: { data: Person }
 
-[altpe_sdk._sync_client.AlternativesPE]
+[altpe_sdk.AlternativesPE]
 __init__(client_id: Optional[str]=None, client_secret: Optional[str]=None, config: Optional[AltPEConfig]=None)
 close()
 __enter__()
@@ -105,4 +103,8 @@ get_people(limit: int=100, offset: int=0, order_by: Optional[PersonOrderBy]=None
 get_person_by_id(person_id: int) -> PersonResponse
 
 [altpe_sdk.mappings]
+SECTORS (sample): { 1: "Business Services", 2: "HR & Recruitment", 3: "Law", 4: "Accounting", 5: "Consulting" }
+THEMES (sample): { 1: "2D Materials", 2: "3D Printing", 3: "3D Technology", 4: "AdTech", 5: "AgriTech" }
+LOCATIONS (sample): { 1: "Africa", 2: "North Africa", 3: "Algeria", 4: "Egypt", 5: "Libya" }
+FUND_TYPES (sample): { 1: "Private Equity - General", 2: "Buyout", 3: "Growth/Expansion", 4: "Diversified Private Equity", 5: "Restructuring/Turnaround" }
 Full list via: from altpe_sdk.mappings import mappings; mappings.get_sector_choices(); mappings.get_theme_choices(); mappings.get_location_choices(); mappings.get_fund_type_choices()
