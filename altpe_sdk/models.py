@@ -96,9 +96,9 @@ class Company(BaseApiModel):
     auditors: list[Auditor] = Field(default_factory=list)
     investors: list[Investor] = Field(default_factory=list)
     financial_statements_audited: Optional[list[dict[str, Any]]] = None
-    financial_statements_extracted: Optional[
-        Union[str, list[Any], dict[str, Any]]
-    ] = None
+    financial_statements_extracted: Optional[Union[str, list[Any], dict[str, Any]]] = (
+        None
+    )
 
 
 class Funding(BaseApiModel):
@@ -310,16 +310,16 @@ class CompanyFinancialsResponse(BaseApiModel):
     data: CompanyFinancials
 
 
-class InvestorListResponse(BaseApiModel):
-    """Investor list response model."""
-
-    data: InvestorListData
-
-
 class InvestorListData(PaginatedResponse):
     """Investor list data model."""
 
     data: list[InvestorSummary]
+
+
+class InvestorListResponse(BaseApiModel):
+    """Investor list response model."""
+
+    data: InvestorListData
 
 
 class InvestorResponse(BaseApiModel):
@@ -328,16 +328,16 @@ class InvestorResponse(BaseApiModel):
     data: InvestorDetail
 
 
-class FounderListResponse(BaseApiModel):
-    """Founder list response model."""
-
-    data: FounderListData
-
-
 class FounderListData(PaginatedResponse):
     """Founder list data model."""
 
     data: list[FounderDetail]
+
+
+class FounderListResponse(BaseApiModel):
+    """Founder list response model."""
+
+    data: FounderListData
 
 
 class FounderResponse(BaseApiModel):
