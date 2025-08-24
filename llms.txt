@@ -74,10 +74,6 @@ PersonListResponse: { total_records: int, limit: int, offset: int, data: list[Pe
 PersonResponse: { data: Person }
 
 [altpe_sdk.AlternativesPE]
-__init__(client_id: Optional[str]=None, client_secret: Optional[str]=None, config: Optional[AltPEConfig]=None)
-close()
-__enter__()
-__exit__(_exc_type, _exc_val, _exc_tb)
 get_companies(limit: int=100, offset: int=0, order_by: Optional[OrderBy]=None, order_direction: Optional[OrderDirection]=OrderDirection.ASC, query: Optional[str]=None, countries: Optional[Union[str, list[CountryCode]]]=None, sectors: Optional[Union[str, list[int]]]=None, themes: Optional[Union[str, list[int]]]=None, investment_stage: Optional[InvestmentStage]=None, valuation_min: Optional[float]=None, valuation_max: Optional[float]=None, total_funding_min: Optional[float]=None, total_funding_max: Optional[float]=None, revenue_min: Optional[float]=None, revenue_max: Optional[float]=None, revenue_growth_min: Optional[float]=None, revenue_growth_max: Optional[float]=None, status: Optional[CompanyStatus]=None, female_founder: Optional[bool]=None, response_type: Optional[ResponseType]=ResponseType.SIMPLE, co_type: Optional[CompanyType]=None, iso_code: Optional[CountryCode]=None) -> CompanyListResponse
 get_company_by_id(company_id: str) -> CompanyResponse
 get_company_by_uen(company_uen: str) -> CompanyResponse
