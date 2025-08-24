@@ -1,0 +1,140 @@
+[altpe_sdk.enums]
+InvestmentStage = { PRE_SEED, SEED, SERIES_A, SERIES_B, SERIES_C_AND_BEYOND }
+CompanyStatus = { ACTIVE, CLOSED }
+ResponseType = { SIMPLE, DETAILED }
+CompanyType = { startup, private }
+OrderDirection = { asc, desc }
+OrderBy = { name, id, no_of_invested_companies }
+CountryCode = { SGP, MYS, IDN, THA, VNM, AUS, PHL }
+CapitalProviderCategory = { fund-manager, limited-partner, family-office }
+FundStatus = { Open, Open - Without first close, Open - With first close, Closed, Evergreen, Upcoming }
+PersonOrderBy = { id, first_name, last_name }
+FundOrderBy = { name }
+CapitalProviderOrderBy = { display_name }
+FundPerformanceOrderBy = { dpi, irr }
+CommitmentDealOrderBy = { fund_manager_name }
+
+[altpe_sdk.models]
+BaseApiModel
+Sector: { id: int, name: str }
+Theme: { id: int, name: str }
+Founder: { id: int, name: str, linkedin_url: str|None, email: str|None, hashed_name: str|None }
+Director: { id: int, name: str, linkedin_url: str|None, email: str|None, hashed_name: str|None }
+Auditor: { id: int, name: str, hashed_name: str|None }
+Investor: { name: str, amount_invested: str, currency: str }
+Company: { id: int, uen: str|None, additional_ids: list[str]|None, name: str, description: str|None, headquaters: str|None, website: str|None, date_incorporated: str|None, investment_stage: str|None, total_equity_funding: float|None, last_valuation: float|None, size_of_last_round: float|None, date_of_last_round: str|None, revenue: float|None, financial_year_end: str|None, revenue_growth: float|None, liquidation: str|None, liquidation_details: str|None, ebit: float|None, liabilities: float|None, status: str|None, company_raising: str|None, exit_type: str|None, female_founder: bool|int|None, updated_at: str|None, sectors: list[Sector], themes: list[Theme], founders: list[Founder], directors: list[Director], auditors: list[Auditor], investors: list[Investor], financial_statements_audited: list[dict[str, Any]]|None, financial_statements_extracted: str|list[Any]|dict[str, Any]|None }
+Funding: { investment_quarter: int, first_investment_date: str, last_investment_date: str, share_class_id: int, series: str, total_funding: float, post_money_valuation: float, pre_money_valuation: float, max_share_price_paid: float, average_share_price_paid: float, total_shares_allocated: int }
+AdditionalFunding: { investment_quarter: int|None, investment_date: str|None, series: str, funding: float, post_money_valuation: float, currency: str|None, price_share: float|None, newslink: str, title: str }
+Revenue: { revenue: float, ebit: float, revenue_quarter: int, revenue_year: int }
+Shareholder: { investor_name: str, is_founder: bool (alias=isFounder), investment_date: str, investor_uen: str, current_share_holding_percentage: int, value_of_investment_at_last_round_valuation: int, sum_amount_invested: float, sum_shares_allocated: int, sum_shares_sold: int|None, sum_secondary_shares_purchased: int|None }
+FundingRoundAndValuation: { investor_id: int, type_of_investor: str|None, investor_name: str, investor_uen: str, amount_invested: int|float, shares_allocated: int, investment_date: str, price_per_share: float }
+PerShareClassSummary: { share_class_id: int, share_class_name: str, funding_rounds_and_valuation: list[FundingRoundAndValuation] }
+CompanyFinancials: { fundings: list[Funding], additional_fundings: list[AdditionalFunding], revenue: list[Revenue], shareholders: list[Shareholder], per_share_class_summary: list[PerShareClassSummary] }
+InvestorCompany: { id: int, name: str, uen: str, description: str, total_shares_allocated: int, total_shares_sold: int, total_secondary_shares: int, total_invested: float, total_seeds: float, amount_invested_series_a: int, amount_invested_series_b: int, amount_invested_seed: float, amount_invested_pre_seed: int, amount_invested_series_c_and_beyond: int, amount_invested_preference_ordinary: int, amount_invested_ordinary: int, amount_invested_preference: Any|None, max_price_per_share: int|float, remaining_shares_after_sold: int, value_of_investment_at_last_round_valuation: int|float, value_of_investment_at_last_round_valuation_primary: int|float, value_of_investment_at_last_round_valuation_seconday: int, remaining_shares_without_secondary_after_sold: int, sectors: list[Sector], themes: list[Theme] }
+InvestorDetail: { id: int, investor_name: str, investor_uen: str, companies: list[InvestorCompany] }
+InvestorSummary: { id: int, investor_name: str, investor_uen: str, investment_date: str, no_of_invested_companies: float, total_invested: int|float|None, amount_invested_seed: float|None, amount_invested_series_a: float|None, amount_invested_series_b: float|None, amount_invested_series_c_and_beyond: float|None }
+FounderDetail: { id: int, name: str, description: str|None, linkedin_url: str, email: str|None, designation: str, hashed_id: str, company_id: int }
+DirectorDetail: { id: int, name: str, description: str|None, linkedin_url: str|None, email: str|None, designation: str, hashed_id: str, company_id: int }
+AuditorDetail: { id: int, name: str, description: str|None, linkedin_url: str|None, hashed_id: str|None, company_id: int }
+PaginatedResponse: { total_records: int, no_of_pages: int, limit: int, offset: int }
+CompanyListData: { total_records: int, no_of_pages: int, limit: int, offset: int, data: list[Company] }
+CompanyListResponse: { data: CompanyListData }
+CompanyResponse: { data: Company }
+CompanyFinancialsResponse: { data: CompanyFinancials }
+InvestorListData: { total_records: int, no_of_pages: int, limit: int, offset: int, data: list[InvestorSummary] }
+InvestorListResponse: { data: InvestorListData }
+InvestorResponse: { data: InvestorDetail }
+FounderListData: { total_records: int, no_of_pages: int, limit: int, offset: int, data: list[FounderDetail] }
+FounderListResponse: { data: FounderListData }
+FounderResponse: { data: FounderDetail }
+DirectorListData: { total_records: int, no_of_pages: int, limit: int, offset: int, data: list[DirectorDetail] }
+DirectorListResponse: { data: DirectorListData }
+DirectorResponse: { data: DirectorDetail }
+AuditorListData: { total_records: int, no_of_pages: int, limit: int, offset: int, data: list[AuditorDetail] }
+AuditorListResponse: { data: AuditorListData }
+AuditorResponse: { data: AuditorDetail }
+TokenResponse: { token: str }
+ErrorResponse: { errors: str|list[str], message: str|None }
+LimitedPartnerType: { lvl0: str, lvl1: str }
+FundType: { lvl0: str, lvl1: str }
+CapitalProvider: { id: int, registration_number: str|None, name: str, category: list[str], type: list[str], hq: str|None, preferred_location: list[str], preferred_deal_type: list[str], preferred_fund_type: list[str], preferred_sector: list[str], preferred_theme: list[str] }
+Fund: { id: str|int, alternatives_id: int|None, registration_number: str|None, name: str, fund_manager_id: int|None, fund_manager: str|None, vintage_year: int|None, type: FundType|None, singleFundType: str|None, size: float|None, status: str|None, irr: float|None, net_multiple: float|None, dpi: float|None, rvpi: float|None, last_report_quarter: str|None, year: int|str|None, quarter: str|None }
+FundPerformance: { id: str|int, fund_id: int, source: str|None, source_name: str|None, capital_provider_source_acting_as: str|None, source_id: int|None, irr: float|None, dpi: float|None, rvpi: float|None, net_multiple: float|None, share_redemption: str|float|None, commited_capital: float|None, profit: float|None, retained_earnings: float|None, dividend: str|float|None, net_assets: float|None, quarter: str|None, year: int|str|None, report_path: str|None, reporting_period: str|None }
+CommitmentDeal: { id: str|int, alternatives_id: int, limited_partner_id: int, limited_partner_name: str, limited_partner_type: list[LimitedPartnerType], fund_id: int, fund_name: str, vintage_year: float|None, fund_manager_id: int, fund_manager_name: str, fund_type: str|None, size: int|float|None, category: str|None, deal_date: str|None }
+JobTitle: { id: int, job_title: str, role_type: str, company_name: str }
+Person: { id: int, first_name: str, last_name: str, email: str|None, linkedin_url: str|None, job_titles: list[JobTitle] }
+CapitalProviderListResponse: { total_records: int, limit: int, offset: int, data: list[CapitalProvider] }
+CapitalProviderResponse: { data: CapitalProvider }
+FundListResponse: { total_records: int, limit: int, offset: int, data: list[Fund] }
+FundResponse: { data: Fund }
+FundPerformanceListResponse: { total_records: int, limit: int, offset: int, data: list[FundPerformance] }
+FundPerformanceResponse: { data: FundPerformance }
+CommitmentDealListResponse: { total_records: int, limit: int, offset: int, data: list[CommitmentDeal] }
+CommitmentDealResponse: { data: CommitmentDeal }
+PersonListResponse: { total_records: int, limit: int, offset: int, data: list[Person] }
+PersonResponse: { data: Person }
+
+[altpe_sdk.client.AsyncAlternativesPE]
+__init__(client_id: str|None=None, client_secret: str|None=None, config: altpe_sdk.config.AltPEConfig|None=None)
+close() -> None
+__aenter__() -> AsyncAlternativesPE
+__aexit__(_exc_type, _exc_val, _exc_tb) -> None
+get_companies(limit: int=100, offset: int=0, order_by: altpe_sdk.enums.OrderBy|None=None, order_direction: altpe_sdk.enums.OrderDirection|None=altpe_sdk.enums.OrderDirection.ASC, query: str|None=None, countries: str|list[altpe_sdk.enums.CountryCode]|None=None, sectors: str|list[int]|None=None, themes: str|list[int]|None=None, investment_stage: altpe_sdk.enums.InvestmentStage|None=None, valuation_min: float|None=None, valuation_max: float|None=None, total_funding_min: float|None=None, total_funding_max: float|None=None, revenue_min: float|None=None, revenue_max: float|None=None, revenue_growth_min: float|None=None, revenue_growth_max: float|None=None, status: altpe_sdk.enums.CompanyStatus|None=None, female_founder: bool|None=None, response_type: altpe_sdk.enums.ResponseType|None=altpe_sdk.enums.ResponseType.SIMPLE, co_type: altpe_sdk.enums.CompanyType|None=None, iso_code: altpe_sdk.enums.CountryCode|None=None) -> altpe_sdk.models.CompanyListResponse
+get_company_by_id(company_id: str) -> altpe_sdk.models.CompanyResponse
+get_company_by_uen(company_uen: str) -> altpe_sdk.models.CompanyResponse
+get_company_financials_by_id(company_id: str) -> altpe_sdk.models.CompanyFinancialsResponse
+get_company_financials_by_uen(company_uen: str) -> altpe_sdk.models.CompanyFinancialsResponse
+get_investors(limit: int=100, offset: int=0, order_by: altpe_sdk.enums.OrderBy|None=None, order_direction: altpe_sdk.enums.OrderDirection|None=altpe_sdk.enums.OrderDirection.ASC, query: str|None=None, sectors: int|None=None, themes: str|None=None, invested_in_stage: altpe_sdk.enums.InvestmentStage|None=None, invested_on_from: str|None=None, invested_on_to: str|None=None, response_type: altpe_sdk.enums.ResponseType|None=altpe_sdk.enums.ResponseType.SIMPLE) -> altpe_sdk.models.InvestorListResponse
+get_investor_by_id(investor_id: str) -> altpe_sdk.models.InvestorResponse
+get_directors(limit: int=100, offset: int=0, order_by: altpe_sdk.enums.OrderBy|None=None, order_direction: altpe_sdk.enums.OrderDirection|None=altpe_sdk.enums.OrderDirection.ASC, query: str|None=None) -> altpe_sdk.models.DirectorListResponse
+get_director_by_id(director_id: str) -> altpe_sdk.models.DirectorResponse
+get_founders(limit: int=100, offset: int=0, order_by: altpe_sdk.enums.OrderBy|None=None, order_direction: altpe_sdk.enums.OrderDirection|None=altpe_sdk.enums.OrderDirection.ASC, query: str|None=None) -> altpe_sdk.models.FounderListResponse
+get_founder_by_id(founder_id: str) -> altpe_sdk.models.FounderResponse
+get_auditors(limit: int=100, offset: int=0, order_by: altpe_sdk.enums.OrderBy|None=None, order_direction: altpe_sdk.enums.OrderDirection|None=altpe_sdk.enums.OrderDirection.ASC, query: str|None=None) -> altpe_sdk.models.AuditorListResponse
+get_auditor_by_id(auditor_id: str) -> altpe_sdk.models.AuditorResponse
+get_capital_providers(limit: int=100, offset: int=0, order_by: str|altpe_sdk.enums.CapitalProviderOrderBy=altpe_sdk.enums.CapitalProviderOrderBy.DISPLAY_NAME, order_direction: str|altpe_sdk.enums.OrderDirection=altpe_sdk.enums.OrderDirection.ASC, query: str|None=None, registration_number: str|None=None, category: str|altpe_sdk.enums.CapitalProviderCategory|None=None, hq: int|None=None, preferred_location: int|None=None, preferred_fund_type: int|None=None, preferred_sector: int|None=None, preferred_theme: int|None=None) -> altpe_sdk.models.CapitalProviderListResponse
+get_capital_provider_by_id(capital_provider_id: int, category: str|altpe_sdk.enums.CapitalProviderCategory) -> altpe_sdk.models.CapitalProviderResponse
+get_funds(limit: int=100, offset: int=0, order_by: str|altpe_sdk.enums.FundOrderBy=altpe_sdk.enums.FundOrderBy.NAME, order_direction: str|altpe_sdk.enums.OrderDirection=altpe_sdk.enums.OrderDirection.ASC, query: str|None=None, registration_number: str|None=None, vintage_year_min: int|None=None, vintage_year_max: int|None=None, fund_type: int|None=None, size_min: float|None=None, size_max: float|None=None, net_irr_min: float|None=None, net_irr_max: float|None=None, net_multiple_min: float|None=None, net_multiple_max: float|None=None, dpi_min: float|None=None, dpi_max: float|None=None, rvpi_min: float|None=None, rvpi_max: float|None=None, last_report_quarter: str|None=None, status: str|None=None) -> altpe_sdk.models.FundListResponse
+get_fund_by_id(fund_id: int) -> altpe_sdk.models.FundResponse
+get_fund_performances(limit: int=100, offset: int=0, order_by: str|altpe_sdk.enums.FundPerformanceOrderBy=altpe_sdk.enums.FundPerformanceOrderBy.DPI, order_direction: str|altpe_sdk.enums.OrderDirection=altpe_sdk.enums.OrderDirection.ASC, query: str|None=None, fund_id: int|None=None, reporting_period: str|None=None, irr_min: float|None=None, irr_max: float|None=None, dpi_min: float|None=None, dpi_max: float|None=None, rvpi_min: float|None=None, rvpi_max: float|None=None, net_multiple_min: float|None=None, net_multiple_max: float|None=None, net_assets_min: float|None=None, net_assets_max: float|None=None) -> altpe_sdk.models.FundPerformanceListResponse
+get_fund_performance_by_id(fund_performance_id: int) -> altpe_sdk.models.FundPerformanceResponse
+get_commitment_deals(limit: int=100, offset: int=0, order_by: str|altpe_sdk.enums.CommitmentDealOrderBy=altpe_sdk.enums.CommitmentDealOrderBy.FUND_MANAGER_NAME, order_direction: str|altpe_sdk.enums.OrderDirection=altpe_sdk.enums.OrderDirection.ASC, query: str|None=None, limited_partner_id: int|None=None, fund_id: int|None=None, fund_type: int|None=None) -> altpe_sdk.models.CommitmentDealListResponse
+get_commitment_deal_by_id(deal_id: int) -> altpe_sdk.models.CommitmentDealResponse
+get_people(limit: int=100, offset: int=0, order_by: str|altpe_sdk.enums.PersonOrderBy=altpe_sdk.enums.PersonOrderBy.ID, order_direction: str|altpe_sdk.enums.OrderDirection=altpe_sdk.enums.OrderDirection.ASC, first_name: str|None=None, last_name: str|None=None, email: str|None=None) -> altpe_sdk.models.PersonListResponse
+get_person_by_id(person_id: int) -> altpe_sdk.models.PersonResponse
+
+[altpe_sdk._sync_client.AlternativesPE]
+__init__(client_id: str|None=None, client_secret: str|None=None, config: altpe_sdk.config.AltPEConfig|None=None)
+close() -> None
+__enter__() -> AlternativesPE
+__exit__(_exc_type, _exc_val, _exc_tb) -> None
+get_companies(limit: int=100, offset: int=0, order_by: altpe_sdk.enums.OrderBy|None=None, order_direction: altpe_sdk.enums.OrderDirection|None=altpe_sdk.enums.OrderDirection.ASC, query: str|None=None, countries: str|list[altpe_sdk.enums.CountryCode]|None=None, sectors: str|list[int]|None=None, themes: str|list[int]|None=None, investment_stage: altpe_sdk.enums.InvestmentStage|None=None, valuation_min: float|None=None, valuation_max: float|None=None, total_funding_min: float|None=None, total_funding_max: float|None=None, revenue_min: float|None=None, revenue_max: float|None=None, revenue_growth_min: float|None=None, revenue_growth_max: float|None=None, status: altpe_sdk.enums.CompanyStatus|None=None, female_founder: bool|None=None, response_type: altpe_sdk.enums.ResponseType|None=altpe_sdk.enums.ResponseType.SIMPLE, co_type: altpe_sdk.enums.CompanyType|None=None, iso_code: altpe_sdk.enums.CountryCode|None=None) -> altpe_sdk.models.CompanyListResponse
+get_company_by_id(company_id: str) -> altpe_sdk.models.CompanyResponse
+get_company_by_uen(company_uen: str) -> altpe_sdk.models.CompanyResponse
+get_company_financials_by_id(company_id: str) -> altpe_sdk.models.CompanyFinancialsResponse
+get_company_financials_by_uen(company_uen: str) -> altpe_sdk.models.CompanyFinancialsResponse
+get_investors(limit: int=100, offset: int=0, order_by: altpe_sdk.enums.OrderBy|None=None, order_direction: altpe_sdk.enums.OrderDirection|None=altpe_sdk.enums.OrderDirection.ASC, query: str|None=None, countries: str|list[altpe_sdk.enums.CountryCode]|None=None, sectors: str|list[int]|None=None, themes: str|list[int]|None=None, investment_stage: altpe_sdk.enums.InvestmentStage|None=None, response_type: altpe_sdk.enums.ResponseType|None=altpe_sdk.enums.ResponseType.SIMPLE, iso_code: altpe_sdk.enums.CountryCode|None=None) -> altpe_sdk.models.InvestorListResponse
+get_investor_by_id(investor_id: str) -> altpe_sdk.models.InvestorResponse
+get_directors(limit: int=100, offset: int=0, order_by: altpe_sdk.enums.OrderBy|None=None, order_direction: altpe_sdk.enums.OrderDirection|None=altpe_sdk.enums.OrderDirection.ASC, query: str|None=None) -> altpe_sdk.models.DirectorListResponse
+get_director_by_id(director_id: str) -> altpe_sdk.models.DirectorResponse
+get_founders(limit: int=100, offset: int=0, order_by: altpe_sdk.enums.OrderBy|None=None, order_direction: altpe_sdk.enums.OrderDirection|None=altpe_sdk.enums.OrderDirection.ASC, query: str|None=None) -> altpe_sdk.models.FounderListResponse
+get_founder_by_id(founder_id: str) -> altpe_sdk.models.FounderResponse
+get_auditors(limit: int=100, offset: int=0, order_by: altpe_sdk.enums.OrderBy|None=None, order_direction: altpe_sdk.enums.OrderDirection|None=altpe_sdk.enums.OrderDirection.ASC, query: str|None=None) -> altpe_sdk.models.AuditorListResponse
+get_auditor_by_id(auditor_id: str) -> altpe_sdk.models.AuditorResponse
+get_capital_providers(limit: int=100, offset: int=0, order_by: altpe_sdk.enums.CapitalProviderOrderBy|None=None, order_direction: altpe_sdk.enums.OrderDirection|None=altpe_sdk.enums.OrderDirection.ASC, query: str|None=None, categories: str|list[altpe_sdk.enums.CapitalProviderCategory]|None=None, countries: str|list[altpe_sdk.enums.CountryCode]|None=None, sectors: str|list[int]|None=None, themes: str|list[int]|None=None, investment_stage: altpe_sdk.enums.InvestmentStage|None=None, iso_code: altpe_sdk.enums.CountryCode|None=None) -> altpe_sdk.models.CapitalProviderListResponse
+get_capital_provider_by_id(capital_provider_id: int, category: str|altpe_sdk.enums.CapitalProviderCategory) -> altpe_sdk.models.CapitalProviderResponse
+get_funds(limit: int=100, offset: int=0, order_by: str|altpe_sdk.enums.FundOrderBy=altpe_sdk.enums.FundOrderBy.NAME, order_direction: str|altpe_sdk.enums.OrderDirection=altpe_sdk.enums.OrderDirection.ASC, query: str|None=None, registration_number: str|None=None, vintage_year_min: int|None=None, vintage_year_max: int|None=None, fund_type: int|None=None, size_min: float|None=None, size_max: float|None=None, net_irr_min: float|None=None, net_irr_max: float|None=None, net_multiple_min: float|None=None, net_multiple_max: float|None=None, dpi_min: float|None=None, dpi_max: float|None=None, rvpi_min: float|None=None, rvpi_max: float|None=None, last_report_quarter: str|None=None, status: str|None=None) -> altpe_sdk.models.FundListResponse
+get_fund_by_id(fund_id: int) -> altpe_sdk.models.FundResponse
+get_fund_performances(limit: int=100, offset: int=0, order_by: altpe_sdk.enums.FundPerformanceOrderBy|None=None, order_direction: altpe_sdk.enums.OrderDirection|None=altpe_sdk.enums.OrderDirection.ASC, fund_id: int|None=None, provider_id: int|None=None, vintage_year_min: int|None=None, vintage_year_max: int|None=None) -> altpe_sdk.models.FundPerformanceListResponse
+get_fund_performance_by_id(fund_performance_id: int) -> altpe_sdk.models.FundPerformanceResponse
+get_commitment_deals(limit: int=100, offset: int=0, order_by: altpe_sdk.enums.CommitmentDealOrderBy|None=None, order_direction: altpe_sdk.enums.OrderDirection|None=altpe_sdk.enums.OrderDirection.ASC, query: str|None=None, fund_id: int|None=None, provider_id: int|None=None, commitment_amount_min: float|None=None, commitment_amount_max: float|None=None, commitment_date_from: str|None=None, commitment_date_to: str|None=None) -> altpe_sdk.models.CommitmentDealListResponse
+get_commitment_deal_by_id(deal_id: int) -> altpe_sdk.models.CommitmentDealResponse
+get_people(limit: int=100, offset: int=0, order_by: altpe_sdk.enums.PersonOrderBy|None=None, order_direction: altpe_sdk.enums.OrderDirection|None=altpe_sdk.enums.OrderDirection.ASC, query: str|None=None, provider_id: int|None=None, fund_id: int|None=None, countries: str|list[altpe_sdk.enums.CountryCode]|None=None, iso_code: altpe_sdk.enums.CountryCode|None=None) -> altpe_sdk.models.PersonListResponse
+get_person_by_id(person_id: int) -> altpe_sdk.models.PersonResponse
+
+[altpe_sdk.mappings]
+SECTORS (sample): { 1: "Business Services", 2: "HR & Recruitment", 3: "Law", 4: "Accounting", 5: "Consulting" }
+THEMES (sample): { 1: "2D Materials", 2: "3D Printing", 3: "3D Technology", 4: "AdTech", 5: "AgriTech" }
+LOCATIONS (sample): { 1: "Africa", 2: "North Africa", 3: "Algeria", 4: "Egypt", 5: "Libya" }
+FUND_TYPES (sample): { 1: "Private Equity - General", 2: "Buyout", 3: "Growth/Expansion", 4: "Diversified Private Equity", 5: "Restructuring/Turnaround" }
+Full list via: from altpe_sdk.mappings import mappings; mappings.get_sector_choices(); mappings.get_theme_choices(); mappings.get_location_choices(); mappings.get_fund_type_choices()

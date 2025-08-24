@@ -1,0 +1,108 @@
+[altpe_sdk.enums]
+InvestmentStage = { PRE_SEED, SEED, SERIES_A, SERIES_B, SERIES_C_AND_BEYOND }
+CompanyStatus = { ACTIVE, CLOSED }
+ResponseType = { SIMPLE, DETAILED }
+CompanyType = { startup, private }
+OrderDirection = { asc, desc }
+OrderBy = { name, id, no_of_invested_companies }
+CountryCode = { SGP, MYS, IDN, THA, VNM, AUS, PHL }
+CapitalProviderCategory = { fund-manager, limited-partner, family-office }
+FundStatus = { Open, Open - Without first close, Open - With first close, Closed, Evergreen, Upcoming }
+PersonOrderBy = { id, first_name, last_name }
+FundOrderBy = { name }
+CapitalProviderOrderBy = { display_name }
+FundPerformanceOrderBy = { dpi, irr }
+CommitmentDealOrderBy = { fund_manager_name }
+
+[altpe_sdk.models]
+BaseApiModel
+BaseApiModel
+Sector: { id: int, name: str }
+Theme: { id: int, name: str }
+Founder: { id: int, name: str, linkedin_url: Optional[str], email: Optional[str], hashed_name: Optional[str] }
+Director: { id: int, name: str, linkedin_url: Optional[str], email: Optional[str], hashed_name: Optional[str] }
+Auditor: { id: int, name: str, hashed_name: Optional[str] }
+Investor: { name: str, amount_invested: str, currency: str }
+Company: { id: int, uen: Optional[str], additional_ids: Optional[list[str]], name: str, description: Optional[str], headquaters: Optional[str], website: Optional[str], date_incorporated: Optional[str], investment_stage: Optional[str], total_equity_funding: Optional[float], last_valuation: Optional[float], size_of_last_round: Optional[float], date_of_last_round: Optional[str], revenue: Optional[float], financial_year_end: Optional[str], revenue_growth: Optional[float], liquidation: Optional[str], liquidation_details: Optional[str], ebit: Optional[float], liabilities: Optional[float], status: Optional[str], company_raising: Optional[str], exit_type: Optional[str], female_founder: Optional[Union[bool, int]], updated_at: Optional[str], sectors: list[Sector], themes: list[Theme], founders: list[Founder], directors: list[Director], auditors: list[Auditor], investors: list[Investor], financial_statements_audited: Optional[list[dict[str, Any]]], financial_statements_extracted: Optional[Union[str, list[Any], dict[str, Any]]] }
+Funding: { investment_quarter: int, first_investment_date: str, last_investment_date: str, share_class_id: int, series: str, total_funding: float, post_money_valuation: float, pre_money_valuation: float, max_share_price_paid: float, average_share_price_paid: float, total_shares_allocated: int }
+AdditionalFunding: { investment_quarter: Optional[int], investment_date: Optional[str], series: str, funding: float, post_money_valuation: float, currency: Optional[str], price_share: Optional[float], newslink: str, title: str }
+Revenue: { revenue: float, ebit: float, revenue_quarter: int, revenue_year: int }
+Shareholder: { investor_name: str, is_founder: bool (alias=isFounder), investment_date: str, investor_uen: str, current_share_holding_percentage: int, value_of_investment_at_last_round_valuation: int, sum_amount_invested: float, sum_shares_allocated: int, sum_shares_sold: Optional[int], sum_secondary_shares_purchased: Optional[int] }
+FundingRoundAndValuation: { investor_id: int, type_of_investor: Optional[str], investor_name: str, investor_uen: str, amount_invested: Union[int, float], shares_allocated: int, investment_date: str, price_per_share: float }
+PerShareClassSummary: { share_class_id: int, share_class_name: str, funding_rounds_and_valuation: list[FundingRoundAndValuation] }
+CompanyFinancials: { fundings: list[Funding], additional_fundings: list[AdditionalFunding], revenue: list[Revenue], shareholders: list[Shareholder], per_share_class_summary: list[PerShareClassSummary] }
+InvestorCompany: { id: int, name: str, uen: str, description: str, total_shares_allocated: int, total_shares_sold: int, total_secondary_shares: int, total_invested: float, total_seeds: float, amount_invested_series_a: int, amount_invested_series_b: int, amount_invested_seed: float, amount_invested_pre_seed: int, amount_invested_series_c_and_beyond: int, amount_invested_preference_ordinary: int, amount_invested_ordinary: int, amount_invested_preference: Optional[Any], max_price_per_share: Union[int, float], remaining_shares_after_sold: int, value_of_investment_at_last_round_valuation: Union[int, float], value_of_investment_at_last_round_valuation_primary: Union[int, float], value_of_investment_at_last_round_valuation_seconday: int, remaining_shares_without_secondary_after_sold: int, sectors: list[Sector], themes: list[Theme] }
+InvestorDetail: { id: int, investor_name: str, investor_uen: str, companies: list[InvestorCompany] }
+InvestorSummary: { id: int, investor_name: str, investor_uen: str, investment_date: str, no_of_invested_companies: float, total_invested: Union[int, float] | None, amount_invested_seed: float | None, amount_invested_series_a: Optional[float], amount_invested_series_b: Optional[float], amount_invested_series_c_and_beyond: Optional[float] }
+FounderDetail: { id: int, name: str, description: Optional[str], linkedin_url: str, email: Optional[str], designation: str, hashed_id: str, company_id: int }
+DirectorDetail: { id: int, name: str, description: Optional[str], linkedin_url: Optional[str], email: Optional[str], designation: str, hashed_id: str, company_id: int }
+AuditorDetail: { id: int, name: str, description: Optional[str], linkedin_url: Optional[str], hashed_id: Optional[str], company_id: int }
+PaginatedResponse: { total_records: int, no_of_pages: int, limit: int, offset: int }
+CompanyListData: { data: list[Company] }
+CompanyListResponse: { data: CompanyListData }
+CompanyResponse: { data: Company }
+CompanyFinancialsResponse: { data: CompanyFinancials }
+InvestorListData: { data: list[InvestorSummary] }
+InvestorListResponse: { data: InvestorListData }
+InvestorResponse: { data: InvestorDetail }
+FounderListData: { data: list[FounderDetail] }
+FounderListResponse: { data: FounderListData }
+FounderResponse: { data: FounderDetail }
+DirectorListData: { data: list[DirectorDetail] }
+DirectorListResponse: { data: DirectorListData }
+DirectorResponse: { data: DirectorDetail }
+AuditorListData: { data: list[AuditorDetail] }
+AuditorListResponse: { data: AuditorListData }
+AuditorResponse: { data: AuditorDetail }
+TokenResponse: { token: str }
+ErrorResponse: { errors: Union[str, list[str]], message: Optional[str] }
+LimitedPartnerType: { lvl0: str, lvl1: str }
+FundType: { lvl0: str, lvl1: str }
+CapitalProvider: { id: int, registration_number: Optional[str], name: str, category: list[str], type: list[str], hq: Optional[str], preferred_location: list[str], preferred_deal_type: list[str], preferred_fund_type: list[str], preferred_sector: list[str], preferred_theme: list[str] }
+Fund: { id: Union[str, int], alternatives_id: Optional[int], registration_number: Optional[str], name: str, fund_manager_id: Optional[int], fund_manager: Optional[str], vintage_year: Optional[int], type: Optional[FundType], singleFundType: Optional[str], size: Optional[float], status: Optional[str], irr: Optional[float], net_multiple: Optional[float], dpi: Optional[float], rvpi: Optional[float], last_report_quarter: Optional[str], year: Optional[Union[int, str]], quarter: Optional[str] }
+FundPerformance: { id: Union[str, int], fund_id: int, source: Optional[str], source_name: Optional[str], capital_provider_source_acting_as: Optional[str], source_id: Optional[int], irr: Optional[float], dpi: Optional[float], rvpi: Optional[float], net_multiple: Optional[float], share_redemption: Optional[Union[str, float]], commited_capital: Optional[float], profit: Optional[float], retained_earnings: Optional[float], dividend: Optional[Union[str, float]], net_assets: Optional[float], quarter: Optional[str], year: Optional[Union[int, str]], report_path: Optional[str], reporting_period: Optional[str] }
+CommitmentDeal: { id: Union[str, int], alternatives_id: int, limited_partner_id: int, limited_partner_name: str, limited_partner_type: list[LimitedPartnerType], fund_id: int, fund_name: str, vintage_year: Optional[float], fund_manager_id: int, fund_manager_name: str, fund_type: Optional[str], size: Optional[Union[int, float]], category: Optional[str], deal_date: Optional[str] }
+JobTitle: { id: int, job_title: str, role_type: str, company_name: str }
+Person: { id: int, first_name: str, last_name: str, email: Optional[str], linkedin_url: Optional[str], job_titles: list[JobTitle] }
+CapitalProviderListResponse: { total_records: int, limit: int, offset: int, data: list[CapitalProvider] }
+CapitalProviderResponse: { data: CapitalProvider }
+FundListResponse: { total_records: int, limit: int, offset: int, data: list[Fund] }
+FundResponse: { data: Fund }
+FundPerformanceListResponse: { total_records: int, limit: int, offset: int, data: list[FundPerformance] }
+FundPerformanceResponse: { data: FundPerformance }
+CommitmentDealListResponse: { total_records: int, limit: int, offset: int, data: list[CommitmentDeal] }
+CommitmentDealResponse: { data: CommitmentDeal }
+PersonListResponse: { total_records: int, limit: int, offset: int, data: list[Person] }
+PersonResponse: { data: Person }
+
+[altpe_sdk._sync_client.AlternativesPE]
+__init__(client_id: Optional[str]=None, client_secret: Optional[str]=None, config: Optional[AltPEConfig]=None)
+close()
+__enter__()
+__exit__(_exc_type, _exc_val, _exc_tb)
+get_companies(limit: int=100, offset: int=0, order_by: Optional[OrderBy]=None, order_direction: Optional[OrderDirection]=OrderDirection.ASC, query: Optional[str]=None, countries: Optional[Union[str, list[CountryCode]]]=None, sectors: Optional[Union[str, list[int]]]=None, themes: Optional[Union[str, list[int]]]=None, investment_stage: Optional[InvestmentStage]=None, valuation_min: Optional[float]=None, valuation_max: Optional[float]=None, total_funding_min: Optional[float]=None, total_funding_max: Optional[float]=None, revenue_min: Optional[float]=None, revenue_max: Optional[float]=None, revenue_growth_min: Optional[float]=None, revenue_growth_max: Optional[float]=None, status: Optional[CompanyStatus]=None, female_founder: Optional[bool]=None, response_type: Optional[ResponseType]=ResponseType.SIMPLE, co_type: Optional[CompanyType]=None, iso_code: Optional[CountryCode]=None) -> CompanyListResponse
+get_company_by_id(company_id: str) -> CompanyResponse
+get_company_by_uen(company_uen: str) -> CompanyResponse
+get_company_financials_by_id(company_id: str) -> CompanyFinancialsResponse
+get_company_financials_by_uen(company_uen: str) -> CompanyFinancialsResponse
+get_investors(limit: int=100, offset: int=0, order_by: Optional[OrderBy]=None, order_direction: Optional[OrderDirection]=OrderDirection.ASC, query: Optional[str]=None, countries: Optional[Union[str, list[CountryCode]]]=None, sectors: Optional[Union[str, list[int]]]=None, themes: Optional[Union[str, list[int]]]=None, investment_stage: Optional[InvestmentStage]=None, response_type: Optional[ResponseType]=ResponseType.SIMPLE, iso_code: Optional[CountryCode]=None) -> InvestorListResponse
+get_investor_by_id(investor_id: str) -> InvestorResponse
+get_directors(limit: int=100, offset: int=0, order_by: Optional[OrderBy]=None, order_direction: Optional[OrderDirection]=OrderDirection.ASC, query: Optional[str]=None) -> DirectorListResponse
+get_director_by_id(director_id: str) -> DirectorResponse
+get_founders(limit: int=100, offset: int=0, order_by: Optional[OrderBy]=None, order_direction: Optional[OrderDirection]=OrderDirection.ASC, query: Optional[str]=None) -> FounderListResponse
+get_founder_by_id(founder_id: str) -> FounderResponse
+get_auditors(limit: int=100, offset: int=0, order_by: Optional[OrderBy]=None, order_direction: Optional[OrderDirection]=OrderDirection.ASC, query: Optional[str]=None) -> AuditorListResponse
+get_auditor_by_id(auditor_id: str) -> AuditorResponse
+get_capital_providers(limit: int=100, offset: int=0, order_by: Optional[CapitalProviderOrderBy]=None, order_direction: Optional[OrderDirection]=OrderDirection.ASC, query: Optional[str]=None, categories: Optional[Union[str, list[CapitalProviderCategory]]]=None, countries: Optional[Union[str, list[CountryCode]]]=None, sectors: Optional[Union[str, list[int]]]=None, themes: Optional[Union[str, list[int]]]=None, investment_stage: Optional[InvestmentStage]=None, iso_code: Optional[CountryCode]=None) -> CapitalProviderListResponse
+get_capital_provider_by_id(capital_provider_id: int, category: Union[str, CapitalProviderCategory]) -> CapitalProviderResponse
+get_funds(limit: int=100, offset: int=0, order_by: Union[str, FundOrderBy]=FundOrderBy.NAME, order_direction: Union[str, OrderDirection]=OrderDirection.ASC, query: Optional[str]=None, registration_number: Optional[str]=None, vintage_year_min: Optional[int]=None, vintage_year_max: Optional[int]=None, fund_type: Optional[int]=None, size_min: Optional[float]=None, size_max: Optional[float]=None, net_irr_min: Optional[float]=None, net_irr_max: Optional[float]=None, net_multiple_min: Optional[float]=None, net_multiple_max: Optional[float]=None, dpi_min: Optional[float]=None, dpi_max: Optional[float]=None, rvpi_min: Optional[float]=None, rvpi_max: Optional[float]=None, last_report_quarter: Optional[str]=None, status: Optional[str]=None) -> FundListResponse
+get_fund_by_id(fund_id: int) -> FundResponse
+get_fund_performances(limit: int=100, offset: int=0, order_by: Optional[FundPerformanceOrderBy]=None, order_direction: Optional[OrderDirection]=OrderDirection.ASC, fund_id: Optional[int]=None, provider_id: Optional[int]=None, vintage_year_min: Optional[int]=None, vintage_year_max: Optional[int]=None) -> FundPerformanceListResponse
+get_fund_performance_by_id(fund_performance_id: int) -> FundPerformanceResponse
+get_commitment_deals(limit: int=100, offset: int=0, order_by: Optional[CommitmentDealOrderBy]=None, order_direction: Optional[OrderDirection]=OrderDirection.ASC, query: Optional[str]=None, fund_id: Optional[int]=None, provider_id: Optional[int]=None, commitment_amount_min: Optional[float]=None, commitment_amount_max: Optional[float]=None, commitment_date_from: Optional[str]=None, commitment_date_to: Optional[str]=None) -> CommitmentDealListResponse
+get_commitment_deal_by_id(deal_id: int) -> CommitmentDealResponse
+get_people(limit: int=100, offset: int=0, order_by: Optional[PersonOrderBy]=None, order_direction: Optional[OrderDirection]=OrderDirection.ASC, query: Optional[str]=None, provider_id: Optional[int]=None, fund_id: Optional[int]=None, countries: Optional[Union[str, list[CountryCode]]]=None, iso_code: Optional[CountryCode]=None) -> PersonListResponse
+get_person_by_id(person_id: int) -> PersonResponse
+
+[altpe_sdk.mappings]
+Full list via: from altpe_sdk.mappings import mappings; mappings.get_sector_choices(); mappings.get_theme_choices(); mappings.get_location_choices(); mappings.get_fund_type_choices()
