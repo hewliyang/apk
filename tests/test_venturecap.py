@@ -1,6 +1,5 @@
 """Tests specifically for VentureCap API endpoints."""
 
-
 from altpe_sdk import AlternativesPE
 from altpe_sdk.exceptions import NotFoundError
 

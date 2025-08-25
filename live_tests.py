@@ -217,7 +217,7 @@ async def main():
     print("\n📊 Test Summary:")
     print("=" * 40)
     print(f"Passed: {passed}/{total}")
-    print(f"Success Rate: {passed/total*100:.1f}%")
+    print(f"Success Rate: {passed / total * 100:.1f}%")
 
     if passed == total:
         print("🎉 All tests passed!")

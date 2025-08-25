@@ -95,7 +95,7 @@ class Company(BaseApiModel):
     directors: list[Director] = Field(default_factory=list)
     auditors: list[Auditor] = Field(default_factory=list)
     investors: list[Investor] = Field(default_factory=list)
-    financial_statements_audited: Optional[list[dict[str, Any]]] = None
+    financial_statements_audited: Optional[Union[list, dict[str, str]]] = None
     financial_statements_extracted: Optional[Union[str, list[Any], dict[str, Any]]] = (
         None
     )
