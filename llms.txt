@@ -14,7 +14,7 @@ CapitalProviderOrderBy = { display_name }
 FundPerformanceOrderBy = { dpi, irr }
 CommitmentDealOrderBy = { fund_manager_name }
 
-[altpe_sdk.models]
+[altpe_sdk.models] // These are all children of pydantic.BaseModel
 Sector: { id: int, name: str }
 Theme: { id: int, name: str }
 Founder: { id: int, name: str, linkedin_url: Optional[str], email: Optional[str], hashed_name: Optional[str] }
