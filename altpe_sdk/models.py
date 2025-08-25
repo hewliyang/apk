@@ -1,6 +1,6 @@
 """Pydantic models for the Alternatives.PE API."""
 
-from typing import Any, Optional, Union
+from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
@@ -30,9 +30,9 @@ class Founder(BaseApiModel):
 
     id: int
     name: str
-    linkedin_url: Optional[str] = None
-    email: Optional[str] = None
-    hashed_name: Optional[str] = None
+    linkedin_url: str | None = None
+    email: str | None = None
+    hashed_name: str | None = None
 
 
 class Director(BaseApiModel):
@@ -40,9 +40,9 @@ class Director(BaseApiModel):
 
     id: int
     name: str
-    linkedin_url: Optional[str] = None
-    email: Optional[str] = None
-    hashed_name: Optional[str] = None
+    linkedin_url: str | None = None
+    email: str | None = None
+    hashed_name: str | None = None
 
 
 class Auditor(BaseApiModel):
@@ -50,7 +50,7 @@ class Auditor(BaseApiModel):
 
     id: int
     name: str
-    hashed_name: Optional[str] = None
+    hashed_name: str | None = None
 
 
 class Investor(BaseApiModel):
@@ -65,40 +65,38 @@ class Company(BaseApiModel):
     """Company model."""
 
     id: int
-    uen: Optional[str] = None
-    additional_ids: Optional[list[str]] = None
+    uen: str | None = None
+    additional_ids: list[str] | None = None
     name: str
-    description: Optional[str] = None
-    headquaters: Optional[str] = None
-    website: Optional[str] = None
-    date_incorporated: Optional[str] = None
-    investment_stage: Optional[str] = None
-    total_equity_funding: Optional[float] = None
-    last_valuation: Optional[float] = None
-    size_of_last_round: Optional[float] = None
-    date_of_last_round: Optional[str] = None
-    revenue: Optional[float] = None
-    financial_year_end: Optional[str] = None
-    revenue_growth: Optional[float] = None
-    liquidation: Optional[str] = None
-    liquidation_details: Optional[str] = None
-    ebit: Optional[float] = None
-    liabilities: Optional[float] = None
-    status: Optional[str] = None
-    company_raising: Optional[str] = None
-    exit_type: Optional[str] = None
-    female_founder: Optional[Union[bool, int]] = None
-    updated_at: Optional[str] = None
+    description: str | None = None
+    headquaters: str | None = None
+    website: str | None = None
+    date_incorporated: str | None = None
+    investment_stage: str | None = None
+    total_equity_funding: float | None = None
+    last_valuation: float | None = None
+    size_of_last_round: float | None = None
+    date_of_last_round: str | None = None
+    revenue: float | None = None
+    financial_year_end: str | None = None
+    revenue_growth: float | None = None
+    liquidation: str | None = None
+    liquidation_details: str | None = None
+    ebit: float | None = None
+    liabilities: float | None = None
+    status: str | None = None
+    company_raising: str | None = None
+    exit_type: str | None = None
+    female_founder: bool | int | None = None
+    updated_at: str | None = None
     sectors: list[Sector] = Field(default_factory=list)
     themes: list[Theme] = Field(default_factory=list)
     founders: list[Founder] = Field(default_factory=list)
     directors: list[Director] = Field(default_factory=list)
     auditors: list[Auditor] = Field(default_factory=list)
     investors: list[Investor] = Field(default_factory=list)
-    financial_statements_audited: Optional[Union[list, dict[str, str]]] = None
-    financial_statements_extracted: Optional[Union[str, list[Any], dict[str, Any]]] = (
-        None
-    )
+    financial_statements_audited: list | dict[str, str] | None = None
+    financial_statements_extracted: str | list[Any] | dict[str, Any] | None = None
 
 
 class Funding(BaseApiModel):
@@ -120,13 +118,13 @@ class Funding(BaseApiModel):
 class AdditionalFunding(BaseApiModel):
     """Additional funding model."""
 
-    investment_quarter: Optional[int] = None
-    investment_date: Optional[str] = None
+    investment_quarter: int | None = None
+    investment_date: str | None = None
     series: str
     funding: float
     post_money_valuation: float
-    currency: Optional[str] = None
-    price_share: Optional[float] = None
+    currency: str | None = None
+    price_share: float | None = None
     newslink: str
     title: str
 
@@ -155,12 +153,12 @@ class Shareholder(BaseApiModel):
     is_founder: bool = Field(alias="isFounder")
     investment_date: str
     investor_uen: str
-    current_share_holding_percentage: Union[int, float]
+    current_share_holding_percentage: int | float
     value_of_investment_at_last_round_valuation: int
     sum_amount_invested: float
     sum_shares_allocated: int
-    sum_shares_sold: Optional[int] = None
-    sum_secondary_shares_purchased: Optional[int] = None
+    sum_shares_sold: int | None = None
+    sum_secondary_shares_purchased: int | None = None
 
     @field_validator("sum_shares_sold", "sum_secondary_shares_purchased", mode="before")
     @classmethod
@@ -175,10 +173,10 @@ class FundingRoundAndValuation(BaseApiModel):
     """Funding round and valuation model."""
 
     investor_id: int
-    type_of_investor: Optional[str] = None
+    type_of_investor: str | None = None
     investor_name: str
     investor_uen: str
-    amount_invested: Union[int, float]
+    amount_invested: int | float
     shares_allocated: int
     investment_date: str
     price_per_share: float
@@ -221,11 +219,11 @@ class InvestorCompany(BaseApiModel):
     amount_invested_series_c_and_beyond: int
     amount_invested_preference_ordinary: int
     amount_invested_ordinary: int
-    amount_invested_preference: Optional[Any] = None
-    max_price_per_share: Union[int, float]
+    amount_invested_preference: Any | None = None
+    max_price_per_share: int | float
     remaining_shares_after_sold: int
-    value_of_investment_at_last_round_valuation: Union[int, float]
-    value_of_investment_at_last_round_valuation_primary: Union[int, float]
+    value_of_investment_at_last_round_valuation: int | float
+    value_of_investment_at_last_round_valuation_primary: int | float
     value_of_investment_at_last_round_valuation_seconday: int
     remaining_shares_without_secondary_after_sold: int
     sectors: list[Sector]
@@ -249,11 +247,11 @@ class InvestorSummary(BaseApiModel):
     investor_uen: str
     investment_date: str
     no_of_invested_companies: float
-    total_invested: Union[int, float] | None = None
+    total_invested: int | float | None = None
     amount_invested_seed: float | None = None
-    amount_invested_series_a: Optional[float] = None
-    amount_invested_series_b: Optional[float] = None
-    amount_invested_series_c_and_beyond: Optional[float] = None
+    amount_invested_series_a: float | None = None
+    amount_invested_series_b: float | None = None
+    amount_invested_series_c_and_beyond: float | None = None
 
 
 class FounderDetail(BaseApiModel):
@@ -261,9 +259,9 @@ class FounderDetail(BaseApiModel):
 
     id: int
     name: str
-    description: Optional[str] = None
-    linkedin_url: Optional[str] = None
-    email: Optional[str] = None
+    description: str | None = None
+    linkedin_url: str | None = None
+    email: str | None = None
     designation: str
     hashed_id: str
     company_id: int
@@ -274,9 +272,9 @@ class DirectorDetail(BaseApiModel):
 
     id: int
     name: str
-    description: Optional[str] = None
-    linkedin_url: Optional[str] = None
-    email: Optional[str] = None
+    description: str | None = None
+    linkedin_url: str | None = None
+    email: str | None = None
     designation: str
     hashed_id: str
     company_id: int
@@ -287,9 +285,9 @@ class AuditorDetail(BaseApiModel):
 
     id: int
     name: str
-    description: Optional[str] = None
-    linkedin_url: Optional[str] = None
-    hashed_id: Optional[str] = None
+    description: str | None = None
+    linkedin_url: str | None = None
+    hashed_id: str | None = None
     company_id: int
 
 
@@ -300,6 +298,11 @@ class PaginatedResponse(BaseApiModel):
     no_of_pages: int
     limit: int
     offset: int
+
+    # Backwards-compat camelCase accessor used in tests
+    @property
+    def totalRecords(self) -> int:  # noqa: N802 - keep camelCase for BC
+        return self.total_records
 
 
 class CompanyListData(PaginatedResponse):
@@ -407,8 +410,8 @@ class TokenResponse(BaseApiModel):
 class ErrorResponse(BaseApiModel):
     """Error response model."""
 
-    errors: Union[str, list[str]]
-    message: Optional[str] = None
+    errors: str | list[str]
+    message: str | None = None
 
 
 # VentureCap API models
@@ -430,11 +433,11 @@ class CapitalProvider(BaseApiModel):
     """Capital Provider model."""
 
     id: int
-    registration_number: Optional[str] = None
+    registration_number: str | None = None
     name: str
     category: list[str] = Field(default_factory=list)
     type: list[str] = Field(default_factory=list)
-    hq: Optional[str] = None
+    hq: str | None = None
     preferred_location: list[str] = Field(default_factory=list)
     preferred_deal_type: list[str] = Field(default_factory=list)
     preferred_fund_type: list[str] = Field(default_factory=list)
@@ -445,24 +448,24 @@ class CapitalProvider(BaseApiModel):
 class Fund(BaseApiModel):
     """Fund model."""
 
-    id: Union[str, int]
-    alternatives_id: Optional[int] = None
-    registration_number: Optional[str] = None
+    id: str | int
+    alternatives_id: int | None = None
+    registration_number: str | None = None
     name: str
-    fund_manager_id: Optional[int] = None
-    fund_manager: Optional[str] = None
-    vintage_year: Optional[int] = None
-    type: Optional[FundType] = None
-    singleFundType: Optional[str] = None
-    size: Optional[float] = None
-    status: Optional[str] = None
-    irr: Optional[float] = None
-    net_multiple: Optional[float] = None
-    dpi: Optional[float] = None
-    rvpi: Optional[float] = None
-    last_report_quarter: Optional[str] = None
-    year: Optional[Union[int, str]] = None
-    quarter: Optional[str] = None
+    fund_manager_id: int | None = None
+    fund_manager: str | None = None
+    vintage_year: int | None = None
+    type: FundType | None = None
+    single_fund_type: str | None = Field(default=None, alias="singleFundType")
+    size: float | None = None
+    status: str | None = None
+    irr: float | None = None
+    net_multiple: float | None = None
+    dpi: float | None = None
+    rvpi: float | None = None
+    last_report_quarter: str | None = None
+    year: int | str | None = None
+    quarter: str | None = None
 
     @field_validator(
         "fund_manager_id", "alternatives_id", "vintage_year", mode="before"
@@ -478,26 +481,26 @@ class Fund(BaseApiModel):
 class FundPerformance(BaseApiModel):
     """Fund Performance model."""
 
-    id: Union[str, int]
+    id: str | int
     fund_id: int
-    source: Optional[str] = None
-    source_name: Optional[str] = None
-    capital_provider_source_acting_as: Optional[str] = None
-    source_id: Optional[int] = None
-    irr: Optional[float] = None
-    dpi: Optional[float] = None
-    rvpi: Optional[float] = None
-    net_multiple: Optional[float] = None
-    share_redemption: Optional[Union[str, float]] = None
-    commited_capital: Optional[float] = None
-    profit: Optional[float] = None
-    retained_earnings: Optional[float] = None
-    dividend: Optional[Union[str, float]] = None
-    net_assets: Optional[float] = None
-    quarter: Optional[str] = None
-    year: Optional[Union[int, str]] = None
-    report_path: Optional[str] = None
-    reporting_period: Optional[str] = None
+    source: str | None = None
+    source_name: str | None = None
+    capital_provider_source_acting_as: str | None = None
+    source_id: int | None = None
+    irr: float | None = None
+    dpi: float | None = None
+    rvpi: float | None = None
+    net_multiple: float | None = None
+    share_redemption: str | float | None = None
+    commited_capital: float | None = None
+    profit: float | None = None
+    retained_earnings: float | None = None
+    dividend: str | float | None = None
+    net_assets: float | None = None
+    quarter: str | None = None
+    year: int | str | None = None
+    report_path: str | None = None
+    reporting_period: str | None = None
 
     @field_validator("source_id", mode="before")
     @classmethod
@@ -511,20 +514,20 @@ class FundPerformance(BaseApiModel):
 class CommitmentDeal(BaseApiModel):
     """Commitment Deal model."""
 
-    id: Union[str, int]
+    id: str | int
     alternatives_id: int
     limited_partner_id: int
     limited_partner_name: str
     limited_partner_type: list[LimitedPartnerType] = Field(default_factory=list)
     fund_id: int
     fund_name: str
-    vintage_year: Optional[float] = None
+    vintage_year: float | None = None
     fund_manager_id: int
     fund_manager_name: str
-    fund_type: Optional[str] = None
-    size: Optional[Union[int, float]] = None
-    category: Optional[str] = None
-    deal_date: Optional[str] = None
+    fund_type: str | None = None
+    size: int | float | None = None
+    category: str | None = None
+    deal_date: str | None = None
 
 
 class JobTitle(BaseApiModel):
@@ -542,8 +545,8 @@ class Person(BaseApiModel):
     id: int
     first_name: str
     last_name: str
-    email: Optional[str] = None
-    linkedin_url: Optional[str] = None
+    email: str | None = None
+    linkedin_url: str | None = None
     job_titles: list[JobTitle] = Field(default_factory=list)
 
 
@@ -555,6 +558,10 @@ class CapitalProviderListResponse(BaseApiModel):
     limit: int
     offset: int
     data: list[CapitalProvider]
+
+    @property
+    def totalRecords(self) -> int:  # noqa: N802 - keep camelCase for BC
+        return self.total_records
 
 
 class CapitalProviderResponse(BaseApiModel):
@@ -586,6 +593,10 @@ class FundPerformanceListResponse(BaseApiModel):
     offset: int
     data: list[FundPerformance]
 
+    @property
+    def totalRecords(self) -> int:  # noqa: N802 - keep camelCase for BC
+        return self.total_records
+
 
 class FundPerformanceResponse(BaseApiModel):
     """Fund Performance response model."""
@@ -601,6 +612,10 @@ class CommitmentDealListResponse(BaseApiModel):
     offset: int
     data: list[CommitmentDeal]
 
+    @property
+    def totalRecords(self) -> int:  # noqa: N802 - keep camelCase for BC
+        return self.total_records
+
 
 class CommitmentDealResponse(BaseApiModel):
     """Commitment Deal response model."""
@@ -615,6 +630,10 @@ class PersonListResponse(BaseApiModel):
     limit: int
     offset: int
     data: list[Person]
+
+    @property
+    def totalRecords(self) -> int:  # noqa: N802 - keep camelCase for BC
+        return self.total_records
 
 
 class PersonResponse(BaseApiModel):

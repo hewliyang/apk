@@ -2,14 +2,14 @@
 
 import asyncio
 import threading
-from typing import Any, Optional
+from typing import Any
 
 import httpx
 from httpx import Response
 
 from .config import AltPEConfig
 from .exceptions import (
-    AltPEException,
+    AltPEError,
     AuthenticationError,
     NotFoundError,
     RateLimitError,
@@ -24,9 +24,9 @@ class BaseHTTPClient:
 
     def __init__(
         self,
-        client_id: Optional[str] = None,
-        client_secret: Optional[str] = None,
-        config: Optional[AltPEConfig] = None,
+        client_id: str | None = None,
+        client_secret: str | None = None,
+        config: AltPEConfig | None = None,
     ):
         """Initialize base HTTP client."""
         self.config = config or AltPEConfig()
@@ -40,7 +40,7 @@ class BaseHTTPClient:
         if not self.config.client_id or not self.config.client_secret:
             raise ValueError("client_id and client_secret must be provided")
 
-        self._token: Optional[str] = None
+        self._token: str | None = None
 
     def _handle_response(self, response: Response) -> Response:
         """Handle HTTP response and raise appropriate exceptions."""
@@ -67,7 +67,7 @@ class BaseHTTPClient:
         elif response.status_code >= 500:
             raise ServerError(message, response.status_code)
         else:
-            raise AltPEException(message, response.status_code)
+            raise AltPEError(message, response.status_code)
 
 
 class HTTPClient(BaseHTTPClient):
@@ -75,9 +75,9 @@ class HTTPClient(BaseHTTPClient):
 
     def __init__(
         self,
-        client_id: Optional[str] = None,
-        client_secret: Optional[str] = None,
-        config: Optional[AltPEConfig] = None,
+        client_id: str | None = None,
+        client_secret: str | None = None,
+        config: AltPEConfig | None = None,
     ):
         """Initialize async HTTP client."""
         super().__init__(client_id, client_secret, config)
@@ -132,9 +132,9 @@ class HTTPClient(BaseHTTPClient):
         self,
         method: str,
         url: str,
-        params: Optional[dict[str, Any]] = None,
-        data: Optional[dict[str, Any]] = None,
-        headers: Optional[dict[str, str]] = None,
+        params: dict[str, Any] | None = None,
+        data: dict[str, Any] | None = None,
+        headers: dict[str, str] | None = None,
         authenticated: bool = True,
     ) -> Response:
         """Make HTTP request."""
@@ -159,8 +159,8 @@ class HTTPClient(BaseHTTPClient):
     async def get(
         self,
         url: str,
-        params: Optional[dict[str, Any]] = None,
-        headers: Optional[dict[str, str]] = None,
+        params: dict[str, Any] | None = None,
+        headers: dict[str, str] | None = None,
     ) -> Response:
         """Make GET request."""
         return await self._make_request("GET", url, params=params, headers=headers)
@@ -168,9 +168,9 @@ class HTTPClient(BaseHTTPClient):
     async def post(
         self,
         url: str,
-        data: Optional[dict[str, Any]] = None,
-        params: Optional[dict[str, Any]] = None,
-        headers: Optional[dict[str, str]] = None,
+        data: dict[str, Any] | None = None,
+        params: dict[str, Any] | None = None,
+        headers: dict[str, str] | None = None,
     ) -> Response:
         """Make POST request."""
         return await self._make_request(
@@ -180,9 +180,9 @@ class HTTPClient(BaseHTTPClient):
     async def put(
         self,
         url: str,
-        data: Optional[dict[str, Any]] = None,
-        params: Optional[dict[str, Any]] = None,
-        headers: Optional[dict[str, str]] = None,
+        data: dict[str, Any] | None = None,
+        params: dict[str, Any] | None = None,
+        headers: dict[str, str] | None = None,
     ) -> Response:
         """Make PUT request."""
         return await self._make_request(
@@ -192,8 +192,8 @@ class HTTPClient(BaseHTTPClient):
     async def delete(
         self,
         url: str,
-        params: Optional[dict[str, Any]] = None,
-        headers: Optional[dict[str, str]] = None,
+        params: dict[str, Any] | None = None,
+        headers: dict[str, str] | None = None,
     ) -> Response:
         """Make DELETE request."""
         return await self._make_request("DELETE", url, params=params, headers=headers)
@@ -204,9 +204,9 @@ class SyncHTTPClient(BaseHTTPClient):
 
     def __init__(
         self,
-        client_id: Optional[str] = None,
-        client_secret: Optional[str] = None,
-        config: Optional[AltPEConfig] = None,
+        client_id: str | None = None,
+        client_secret: str | None = None,
+        config: AltPEConfig | None = None,
     ):
         """Initialize sync HTTP client."""
         super().__init__(client_id, client_secret, config)
@@ -261,9 +261,9 @@ class SyncHTTPClient(BaseHTTPClient):
         self,
         method: str,
         url: str,
-        params: Optional[dict[str, Any]] = None,
-        data: Optional[dict[str, Any]] = None,
-        headers: Optional[dict[str, str]] = None,
+        params: dict[str, Any] | None = None,
+        data: dict[str, Any] | None = None,
+        headers: dict[str, str] | None = None,
         authenticated: bool = True,
     ) -> Response:
         """Make HTTP request."""
@@ -288,8 +288,8 @@ class SyncHTTPClient(BaseHTTPClient):
     def get(
         self,
         url: str,
-        params: Optional[dict[str, Any]] = None,
-        headers: Optional[dict[str, str]] = None,
+        params: dict[str, Any] | None = None,
+        headers: dict[str, str] | None = None,
     ) -> Response:
         """Make GET request."""
         return self._make_request("GET", url, params=params, headers=headers)
@@ -297,9 +297,9 @@ class SyncHTTPClient(BaseHTTPClient):
     def post(
         self,
         url: str,
-        data: Optional[dict[str, Any]] = None,
-        params: Optional[dict[str, Any]] = None,
-        headers: Optional[dict[str, str]] = None,
+        data: dict[str, Any] | None = None,
+        params: dict[str, Any] | None = None,
+        headers: dict[str, str] | None = None,
     ) -> Response:
         """Make POST request."""
         return self._make_request(
@@ -309,9 +309,9 @@ class SyncHTTPClient(BaseHTTPClient):
     def put(
         self,
         url: str,
-        data: Optional[dict[str, Any]] = None,
-        params: Optional[dict[str, Any]] = None,
-        headers: Optional[dict[str, str]] = None,
+        data: dict[str, Any] | None = None,
+        params: dict[str, Any] | None = None,
+        headers: dict[str, str] | None = None,
     ) -> Response:
         """Make PUT request."""
         return self._make_request("PUT", url, params=params, data=data, headers=headers)
@@ -319,8 +319,8 @@ class SyncHTTPClient(BaseHTTPClient):
     def delete(
         self,
         url: str,
-        params: Optional[dict[str, Any]] = None,
-        headers: Optional[dict[str, str]] = None,
+        params: dict[str, Any] | None = None,
+        headers: dict[str, str] | None = None,
     ) -> Response:
         """Make DELETE request."""
         return self._make_request("DELETE", url, params=params, headers=headers)

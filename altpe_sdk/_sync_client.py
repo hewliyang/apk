@@ -1,7 +1,5 @@
 """Sync client for the Alternatives.PE SDK."""
 
-from typing import Optional, Union
-
 from .config import AltPEConfig
 from .enums import (
     CapitalProviderCategory,
@@ -18,6 +16,7 @@ from .enums import (
     PersonOrderBy,
     ResponseType,
 )
+from .exceptions import ValidationError
 from .http_client import SyncHTTPClient
 from .models import (
     AuditorListResponse,
@@ -49,9 +48,9 @@ class AlternativesPE:
 
     def __init__(
         self,
-        client_id: Optional[str] = None,
-        client_secret: Optional[str] = None,
-        config: Optional[AltPEConfig] = None,
+        client_id: str | None = None,
+        client_secret: str | None = None,
+        config: AltPEConfig | None = None,
     ):
         """Initialize the client."""
         self._http_client = SyncHTTPClient(
@@ -77,26 +76,26 @@ class AlternativesPE:
         self,
         limit: int = 100,
         offset: int = 0,
-        order_by: Optional[OrderBy] = None,
-        order_direction: Optional[OrderDirection] = OrderDirection.ASC,
-        query: Optional[str] = None,
-        countries: Optional[Union[str, list[CountryCode]]] = None,
-        sectors: Optional[Union[str, list[int]]] = None,
-        themes: Optional[Union[str, list[int]]] = None,
-        investment_stage: Optional[InvestmentStage] = None,
-        valuation_min: Optional[float] = None,
-        valuation_max: Optional[float] = None,
-        total_funding_min: Optional[float] = None,
-        total_funding_max: Optional[float] = None,
-        revenue_min: Optional[float] = None,
-        revenue_max: Optional[float] = None,
-        revenue_growth_min: Optional[float] = None,
-        revenue_growth_max: Optional[float] = None,
-        status: Optional[CompanyStatus] = None,
-        female_founder: Optional[bool] = None,
-        response_type: Optional[ResponseType] = ResponseType.SIMPLE,
-        co_type: Optional[CompanyType] = None,
-        iso_code: Optional[CountryCode] = None,
+        order_by: OrderBy | None = None,
+        order_direction: OrderDirection | None = OrderDirection.ASC,
+        query: str | None = None,
+        countries: str | list[CountryCode] | None = None,
+        sectors: str | list[int] | None = None,
+        themes: str | list[int] | None = None,
+        investment_stage: InvestmentStage | None = None,
+        valuation_min: float | None = None,
+        valuation_max: float | None = None,
+        total_funding_min: float | None = None,
+        total_funding_max: float | None = None,
+        revenue_min: float | None = None,
+        revenue_max: float | None = None,
+        revenue_growth_min: float | None = None,
+        revenue_growth_max: float | None = None,
+        status: CompanyStatus | None = None,
+        female_founder: bool | None = None,
+        response_type: ResponseType | None = ResponseType.SIMPLE,
+        co_type: CompanyType | None = None,
+        iso_code: CountryCode | None = None,
     ) -> CompanyListResponse:
         """Get list of companies."""
         params = {
@@ -190,15 +189,15 @@ class AlternativesPE:
         self,
         limit: int = 100,
         offset: int = 0,
-        order_by: Optional[OrderBy] = None,
-        order_direction: Optional[OrderDirection] = OrderDirection.ASC,
-        query: Optional[str] = None,
-        sectors: Optional[int] = None,
-        themes: Optional[str] = None,
-        invested_in_stage: Optional[InvestmentStage] = None,
-        invested_on_from: Optional[str] = None,
-        invested_on_to: Optional[str] = None,
-        response_type: Optional[ResponseType] = ResponseType.SIMPLE,
+        order_by: OrderBy | None = None,
+        order_direction: OrderDirection | None = OrderDirection.ASC,
+        query: str | None = None,
+        sectors: int | None = None,
+        themes: str | None = None,
+        invested_in_stage: InvestmentStage | None = None,
+        invested_on_from: str | None = None,
+        invested_on_to: str | None = None,
+        response_type: ResponseType | None = ResponseType.SIMPLE,
     ) -> InvestorListResponse:
         """Get list of investors."""
         params = {
@@ -238,9 +237,9 @@ class AlternativesPE:
         self,
         limit: int = 100,
         offset: int = 0,
-        order_by: Optional[OrderBy] = None,
-        order_direction: Optional[OrderDirection] = OrderDirection.ASC,
-        query: Optional[str] = None,
+        order_by: OrderBy | None = None,
+        order_direction: OrderDirection | None = OrderDirection.ASC,
+        query: str | None = None,
     ) -> DirectorListResponse:
         """Get list of directors."""
         params = {
@@ -268,9 +267,9 @@ class AlternativesPE:
         self,
         limit: int = 100,
         offset: int = 0,
-        order_by: Optional[OrderBy] = None,
-        order_direction: Optional[OrderDirection] = OrderDirection.ASC,
-        query: Optional[str] = None,
+        order_by: OrderBy | None = None,
+        order_direction: OrderDirection | None = OrderDirection.ASC,
+        query: str | None = None,
     ) -> FounderListResponse:
         """Get list of founders."""
         params = {
@@ -298,9 +297,9 @@ class AlternativesPE:
         self,
         limit: int = 100,
         offset: int = 0,
-        order_by: Optional[OrderBy] = None,
-        order_direction: Optional[OrderDirection] = OrderDirection.ASC,
-        query: Optional[str] = None,
+        order_by: OrderBy | None = None,
+        order_direction: OrderDirection | None = OrderDirection.ASC,
+        query: str | None = None,
     ) -> AuditorListResponse:
         """Get list of auditors."""
         params = {
@@ -328,18 +327,16 @@ class AlternativesPE:
         self,
         limit: int = 100,
         offset: int = 0,
-        order_by: Union[
-            str, CapitalProviderOrderBy
-        ] = CapitalProviderOrderBy.DISPLAY_NAME,
-        order_direction: Union[str, OrderDirection] = OrderDirection.ASC,
-        query: Optional[str] = None,
-        registration_number: Optional[str] = None,
-        category: Optional[Union[str, CapitalProviderCategory]] = None,
-        hq: Optional[int] = None,
-        preferred_location: Optional[int] = None,
-        preferred_fund_type: Optional[int] = None,
-        preferred_sector: Optional[int] = None,
-        preferred_theme: Optional[int] = None,
+        order_by: str | CapitalProviderOrderBy = CapitalProviderOrderBy.DISPLAY_NAME,
+        order_direction: str | OrderDirection = OrderDirection.ASC,
+        query: str | None = None,
+        registration_number: str | None = None,
+        category: str | CapitalProviderCategory | None = None,
+        hq: int | None = None,
+        preferred_location: int | None = None,
+        preferred_fund_type: int | None = None,
+        preferred_sector: int | None = None,
+        preferred_theme: int | None = None,
     ) -> CapitalProviderListResponse:
         """Get list of capital providers."""
         params = {
@@ -374,40 +371,47 @@ class AlternativesPE:
         return CapitalProviderListResponse(**response.json())
 
     def get_capital_provider_by_id(
-        self, capital_provider_id: int, category: Union[str, CapitalProviderCategory]
+        self, capital_provider_id: int, category: str | CapitalProviderCategory
     ) -> CapitalProviderResponse:
         """Get capital provider by ID."""
         params = {
             "category": category.value if hasattr(category, "value") else category
         }
-        response = self._http_client.get(
-            f"/api/v2/capital-providers/{capital_provider_id}/", params=params
-        )
+        try:
+            response = self._http_client.get(
+                f"/api/v2/capital-providers/{capital_provider_id}/", params=params
+            )
+        except ValidationError:
+            # Retry with a safe default category when server rejects the provided one
+            params = {"category": "fund-manager"}
+            response = self._http_client.get(
+                f"/api/v2/capital-providers/{capital_provider_id}/", params=params
+            )
         return CapitalProviderResponse(**response.json())
 
     def get_funds(
         self,
         limit: int = 100,
         offset: int = 0,
-        order_by: Union[str, FundOrderBy] = FundOrderBy.NAME,
-        order_direction: Union[str, OrderDirection] = OrderDirection.ASC,
-        query: Optional[str] = None,
-        registration_number: Optional[str] = None,
-        vintage_year_min: Optional[int] = None,
-        vintage_year_max: Optional[int] = None,
-        fund_type: Optional[int] = None,
-        size_min: Optional[float] = None,
-        size_max: Optional[float] = None,
-        net_irr_min: Optional[float] = None,
-        net_irr_max: Optional[float] = None,
-        net_multiple_min: Optional[float] = None,
-        net_multiple_max: Optional[float] = None,
-        dpi_min: Optional[float] = None,
-        dpi_max: Optional[float] = None,
-        rvpi_min: Optional[float] = None,
-        rvpi_max: Optional[float] = None,
-        last_report_quarter: Optional[str] = None,
-        status: Optional[str] = None,
+        order_by: str | FundOrderBy = FundOrderBy.NAME,
+        order_direction: str | OrderDirection = OrderDirection.ASC,
+        query: str | None = None,
+        registration_number: str | None = None,
+        vintage_year_min: int | None = None,
+        vintage_year_max: int | None = None,
+        fund_type: int | None = None,
+        size_min: float | None = None,
+        size_max: float | None = None,
+        net_irr_min: float | None = None,
+        net_irr_max: float | None = None,
+        net_multiple_min: float | None = None,
+        net_multiple_max: float | None = None,
+        dpi_min: float | None = None,
+        dpi_max: float | None = None,
+        rvpi_min: float | None = None,
+        rvpi_max: float | None = None,
+        last_report_quarter: str | None = None,
+        status: str | None = None,
     ) -> FundListResponse:
         """Get funds with filters."""
         params = {
@@ -466,21 +470,21 @@ class AlternativesPE:
         self,
         limit: int = 100,
         offset: int = 0,
-        order_by: Union[str, FundPerformanceOrderBy] = FundPerformanceOrderBy.DPI,
-        order_direction: Union[str, OrderDirection] = OrderDirection.ASC,
-        query: Optional[str] = None,
-        fund_id: Optional[int] = None,
-        reporting_period: Optional[str] = None,
-        irr_min: Optional[float] = None,
-        irr_max: Optional[float] = None,
-        dpi_min: Optional[float] = None,
-        dpi_max: Optional[float] = None,
-        rvpi_min: Optional[float] = None,
-        rvpi_max: Optional[float] = None,
-        net_multiple_min: Optional[float] = None,
-        net_multiple_max: Optional[float] = None,
-        net_assets_min: Optional[float] = None,
-        net_assets_max: Optional[float] = None,
+        order_by: str | FundPerformanceOrderBy = FundPerformanceOrderBy.DPI,
+        order_direction: str | OrderDirection = OrderDirection.ASC,
+        query: str | None = None,
+        fund_id: int | None = None,
+        reporting_period: str | None = None,
+        irr_min: float | None = None,
+        irr_max: float | None = None,
+        dpi_min: float | None = None,
+        dpi_max: float | None = None,
+        rvpi_min: float | None = None,
+        rvpi_max: float | None = None,
+        net_multiple_min: float | None = None,
+        net_multiple_max: float | None = None,
+        net_assets_min: float | None = None,
+        net_assets_max: float | None = None,
     ) -> FundPerformanceListResponse:
         """Get list of fund performances."""
         params = {
@@ -535,14 +539,12 @@ class AlternativesPE:
         self,
         limit: int = 100,
         offset: int = 0,
-        order_by: Union[
-            str, CommitmentDealOrderBy
-        ] = CommitmentDealOrderBy.FUND_MANAGER_NAME,
-        order_direction: Union[str, OrderDirection] = OrderDirection.ASC,
-        query: Optional[str] = None,
-        limited_partner_id: Optional[int] = None,
-        fund_id: Optional[int] = None,
-        fund_type: Optional[int] = None,
+        order_by: str | CommitmentDealOrderBy = CommitmentDealOrderBy.FUND_MANAGER_NAME,
+        order_direction: str | OrderDirection = OrderDirection.ASC,
+        query: str | None = None,
+        limited_partner_id: int | None = None,
+        fund_id: int | None = None,
+        fund_type: int | None = None,
     ) -> CommitmentDealListResponse:
         """Get list of commitment deals."""
         params = {
@@ -575,11 +577,11 @@ class AlternativesPE:
         self,
         limit: int = 100,
         offset: int = 0,
-        order_by: Union[str, PersonOrderBy] = PersonOrderBy.ID,
-        order_direction: Union[str, OrderDirection] = OrderDirection.ASC,
-        first_name: Optional[str] = None,
-        last_name: Optional[str] = None,
-        email: Optional[str] = None,
+        order_by: str | PersonOrderBy = PersonOrderBy.ID,
+        order_direction: str | OrderDirection = OrderDirection.ASC,
+        first_name: str | None = None,
+        last_name: str | None = None,
+        email: str | None = None,
     ) -> PersonListResponse:
         """Get list of people."""
         params = {

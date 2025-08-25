@@ -1,44 +1,48 @@
 """Exceptions for the Alternatives.PE SDK."""
 
-from typing import Any, Optional
+from typing import Any
 
 
-class AltPEException(Exception):
+class AltPEError(Exception):
     """Base exception for Alternatives.PE SDK."""
 
-    def __init__(self, message: str, status_code: Optional[int] = None):
+    def __init__(self, message: str, status_code: int | None = None):
         super().__init__(message)
         self.message = message
         self.status_code = status_code
 
 
-class AuthenticationError(AltPEException):
+class AuthenticationError(AltPEError):
     """Authentication error."""
 
     pass
 
 
-class NotFoundError(AltPEException):
+class NotFoundError(AltPEError):
     """Resource not found error."""
 
     pass
 
 
-class ValidationError(AltPEException):
+class ValidationError(AltPEError):
     """Validation error."""
 
-    def __init__(self, message: str, errors: Optional[dict[str, Any]] = None):
+    def __init__(self, message: str, errors: dict[str, Any] | None = None):
         super().__init__(message)
         self.errors = errors
 
 
-class RateLimitError(AltPEException):
+class RateLimitError(AltPEError):
     """Rate limit exceeded error."""
 
     pass
 
 
-class ServerError(AltPEException):
+class ServerError(AltPEError):
     """Server error."""
 
     pass
+
+
+# Backwards-compat alias
+AltPEException = AltPEError
