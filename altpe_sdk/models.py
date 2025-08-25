@@ -155,7 +155,7 @@ class Shareholder(BaseApiModel):
     is_founder: bool = Field(alias="isFounder")
     investment_date: str
     investor_uen: str
-    current_share_holding_percentage: int
+    current_share_holding_percentage: Union[int, float]
     value_of_investment_at_last_round_valuation: int
     sum_amount_invested: float
     sum_shares_allocated: int
