@@ -2,7 +2,7 @@
 
 from typing import Any, Optional, Union
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 class BaseApiModel(BaseModel):
@@ -130,6 +130,14 @@ class AdditionalFunding(BaseApiModel):
     newslink: str
     title: str
 
+    @field_validator("investment_quarter", mode="before")
+    @classmethod
+    def convert_empty_string_to_none(cls, v):
+        """Convert empty strings to None for optional integer fields."""
+        if v == "" or v is None:
+            return None
+        return v
+
 
 class Revenue(BaseApiModel):
     """Revenue model."""
@@ -153,6 +161,14 @@ class Shareholder(BaseApiModel):
     sum_shares_allocated: int
     sum_shares_sold: Optional[int] = None
     sum_secondary_shares_purchased: Optional[int] = None
+
+    @field_validator("sum_shares_sold", "sum_secondary_shares_purchased", mode="before")
+    @classmethod
+    def convert_empty_string_to_none(cls, v):
+        """Convert empty strings to None for optional integer fields."""
+        if v == "" or v is None:
+            return None
+        return v
 
 
 class FundingRoundAndValuation(BaseApiModel):
@@ -246,7 +262,7 @@ class FounderDetail(BaseApiModel):
     id: int
     name: str
     description: Optional[str] = None
-    linkedin_url: str
+    linkedin_url: Optional[str] = None
     email: Optional[str] = None
     designation: str
     hashed_id: str
@@ -448,6 +464,16 @@ class Fund(BaseApiModel):
     year: Optional[Union[int, str]] = None
     quarter: Optional[str] = None
 
+    @field_validator(
+        "fund_manager_id", "alternatives_id", "vintage_year", mode="before"
+    )
+    @classmethod
+    def convert_empty_string_to_none(cls, v):
+        """Convert empty strings to None for optional integer fields."""
+        if v == "" or v is None:
+            return None
+        return v
+
 
 class FundPerformance(BaseApiModel):
     """Fund Performance model."""
@@ -472,6 +498,14 @@ class FundPerformance(BaseApiModel):
     year: Optional[Union[int, str]] = None
     report_path: Optional[str] = None
     reporting_period: Optional[str] = None
+
+    @field_validator("source_id", mode="before")
+    @classmethod
+    def convert_empty_string_to_none(cls, v):
+        """Convert empty strings to None for optional integer fields."""
+        if v == "" or v is None:
+            return None
+        return v
 
 
 class CommitmentDeal(BaseApiModel):
