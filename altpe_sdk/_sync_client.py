@@ -100,7 +100,7 @@ class AlternativesPE:
     ) -> CompanyListResponse:
         """Get list of companies."""
         params = {
-            "limit": limit,
+            "limit": min(limit, 100),
             "offset": offset,
         }
 
@@ -112,19 +112,19 @@ class AlternativesPE:
             params["query"] = query
         if countries:
             if isinstance(countries, list):
-                params["countries"] = ",".join(
+                params["countries"] = ", ".join(
                     c.value if isinstance(c, CountryCode) else c for c in countries
                 )
             else:
                 params["countries"] = countries
         if sectors:
             if isinstance(sectors, list):
-                params["sectors"] = ",".join(str(s) for s in sectors)
+                params["sectors"] = ", ".join(str(s) for s in sectors)
             else:
                 params["sectors"] = sectors
         if themes:
             if isinstance(themes, list):
-                params["themes"] = ",".join(str(t) for t in themes)
+                params["themes"] = ", ".join(str(t) for t in themes)
             else:
                 params["themes"] = themes
         if investment_stage:
@@ -148,7 +148,7 @@ class AlternativesPE:
         if status:
             params["status"] = status.value
         if female_founder is not None:
-            params["female_founder"] = str(female_founder).lower()
+            params["female_founder"] = "1" if female_founder else "0"
         if response_type:
             params["response_type"] = response_type.value
         if co_type:
@@ -193,16 +193,16 @@ class AlternativesPE:
         order_by: Optional[OrderBy] = None,
         order_direction: Optional[OrderDirection] = OrderDirection.ASC,
         query: Optional[str] = None,
-        countries: Optional[Union[str, list[CountryCode]]] = None,
-        sectors: Optional[Union[str, list[int]]] = None,
-        themes: Optional[Union[str, list[int]]] = None,
-        investment_stage: Optional[InvestmentStage] = None,
+        sectors: Optional[int] = None,
+        themes: Optional[str] = None,
+        invested_in_stage: Optional[InvestmentStage] = None,
+        invested_on_from: Optional[str] = None,
+        invested_on_to: Optional[str] = None,
         response_type: Optional[ResponseType] = ResponseType.SIMPLE,
-        iso_code: Optional[CountryCode] = None,
     ) -> InvestorListResponse:
         """Get list of investors."""
         params = {
-            "limit": limit,
+            "limit": min(limit, 100),
             "offset": offset,
         }
 
@@ -212,29 +212,18 @@ class AlternativesPE:
             params["order_direction"] = order_direction.value
         if query:
             params["query"] = query
-        if countries:
-            if isinstance(countries, list):
-                params["countries"] = ",".join(
-                    c.value if isinstance(c, CountryCode) else c for c in countries
-                )
-            else:
-                params["countries"] = countries
-        if sectors:
-            if isinstance(sectors, list):
-                params["sectors"] = ",".join(str(s) for s in sectors)
-            else:
-                params["sectors"] = sectors
+        if sectors is not None:
+            params["sectors"] = sectors
         if themes:
-            if isinstance(themes, list):
-                params["themes"] = ",".join(str(t) for t in themes)
-            else:
-                params["themes"] = themes
-        if investment_stage:
-            params["investment_stage"] = investment_stage.value
+            params["themes"] = themes
+        if invested_in_stage:
+            params["invested_in_stage"] = invested_in_stage.value
+        if invested_on_from:
+            params["invested_on_from"] = invested_on_from
+        if invested_on_to:
+            params["invested_on_to"] = invested_on_to
         if response_type:
             params["response_type"] = response_type.value
-        if iso_code:
-            params["iso_code"] = iso_code.value
 
         response = self._http_client.get("/api/v2/investors", params=params)
         return InvestorListResponse(**response.json())
@@ -255,7 +244,7 @@ class AlternativesPE:
     ) -> DirectorListResponse:
         """Get list of directors."""
         params = {
-            "limit": limit,
+            "limit": min(limit, 100),
             "offset": offset,
         }
 
@@ -285,7 +274,7 @@ class AlternativesPE:
     ) -> FounderListResponse:
         """Get list of founders."""
         params = {
-            "limit": limit,
+            "limit": min(limit, 100),
             "offset": offset,
         }
 
@@ -315,7 +304,7 @@ class AlternativesPE:
     ) -> AuditorListResponse:
         """Get list of auditors."""
         params = {
-            "limit": limit,
+            "limit": min(limit, 100),
             "offset": offset,
         }
 
@@ -339,57 +328,47 @@ class AlternativesPE:
         self,
         limit: int = 100,
         offset: int = 0,
-        order_by: Optional[CapitalProviderOrderBy] = None,
-        order_direction: Optional[OrderDirection] = OrderDirection.ASC,
+        order_by: Union[
+            str, CapitalProviderOrderBy
+        ] = CapitalProviderOrderBy.DISPLAY_NAME,
+        order_direction: Union[str, OrderDirection] = OrderDirection.ASC,
         query: Optional[str] = None,
-        categories: Optional[Union[str, list[CapitalProviderCategory]]] = None,
-        countries: Optional[Union[str, list[CountryCode]]] = None,
-        sectors: Optional[Union[str, list[int]]] = None,
-        themes: Optional[Union[str, list[int]]] = None,
-        investment_stage: Optional[InvestmentStage] = None,
-        iso_code: Optional[CountryCode] = None,
+        registration_number: Optional[str] = None,
+        category: Optional[Union[str, CapitalProviderCategory]] = None,
+        hq: Optional[int] = None,
+        preferred_location: Optional[int] = None,
+        preferred_fund_type: Optional[int] = None,
+        preferred_sector: Optional[int] = None,
+        preferred_theme: Optional[int] = None,
     ) -> CapitalProviderListResponse:
         """Get list of capital providers."""
         params = {
-            "limit": limit,
+            "limit": min(limit, 100),
             "offset": offset,
+            "order_by": order_by.value if hasattr(order_by, "value") else order_by,
+            "order_direction": order_direction.value
+            if hasattr(order_direction, "value")
+            else order_direction,
         }
 
-        if order_by:
-            params["order_by"] = order_by.value
-        if order_direction:
-            params["order_direction"] = order_direction.value
         if query:
             params["query"] = query
-        if categories:
-            if isinstance(categories, list):
-                params["categories"] = ",".join(
-                    c.value if isinstance(c, CapitalProviderCategory) else c
-                    for c in categories
-                )
-            else:
-                params["categories"] = categories
-        if countries:
-            if isinstance(countries, list):
-                params["countries"] = ",".join(
-                    c.value if isinstance(c, CountryCode) else c for c in countries
-                )
-            else:
-                params["countries"] = countries
-        if sectors:
-            if isinstance(sectors, list):
-                params["sectors"] = ",".join(str(s) for s in sectors)
-            else:
-                params["sectors"] = sectors
-        if themes:
-            if isinstance(themes, list):
-                params["themes"] = ",".join(str(t) for t in themes)
-            else:
-                params["themes"] = themes
-        if investment_stage:
-            params["investment_stage"] = investment_stage.value
-        if iso_code:
-            params["iso_code"] = iso_code.value
+        if registration_number:
+            params["registration_number"] = registration_number
+        if category:
+            params["category"] = (
+                category.value if hasattr(category, "value") else category
+            )
+        if hq is not None:
+            params["hq"] = hq
+        if preferred_location is not None:
+            params["preferred_location"] = preferred_location
+        if preferred_fund_type is not None:
+            params["preferred_fund_type"] = preferred_fund_type
+        if preferred_sector is not None:
+            params["preferred_sector"] = preferred_sector
+        if preferred_theme is not None:
+            params["preferred_theme"] = preferred_theme
 
         response = self._http_client.get("/api/v2/capital-providers", params=params)
         return CapitalProviderListResponse(**response.json())
@@ -487,31 +466,58 @@ class AlternativesPE:
         self,
         limit: int = 100,
         offset: int = 0,
-        order_by: Optional[FundPerformanceOrderBy] = None,
-        order_direction: Optional[OrderDirection] = OrderDirection.ASC,
+        order_by: Union[str, FundPerformanceOrderBy] = FundPerformanceOrderBy.DPI,
+        order_direction: Union[str, OrderDirection] = OrderDirection.ASC,
+        query: Optional[str] = None,
         fund_id: Optional[int] = None,
-        provider_id: Optional[int] = None,
-        vintage_year_min: Optional[int] = None,
-        vintage_year_max: Optional[int] = None,
+        reporting_period: Optional[str] = None,
+        irr_min: Optional[float] = None,
+        irr_max: Optional[float] = None,
+        dpi_min: Optional[float] = None,
+        dpi_max: Optional[float] = None,
+        rvpi_min: Optional[float] = None,
+        rvpi_max: Optional[float] = None,
+        net_multiple_min: Optional[float] = None,
+        net_multiple_max: Optional[float] = None,
+        net_assets_min: Optional[float] = None,
+        net_assets_max: Optional[float] = None,
     ) -> FundPerformanceListResponse:
         """Get list of fund performances."""
         params = {
-            "limit": limit,
+            "limit": min(limit, 100),
             "offset": offset,
+            "order_by": order_by.value if hasattr(order_by, "value") else order_by,
+            "order_direction": order_direction.value
+            if hasattr(order_direction, "value")
+            else order_direction,
         }
 
-        if order_by:
-            params["order_by"] = order_by.value
-        if order_direction:
-            params["order_direction"] = order_direction.value
-        if fund_id:
+        if query:
+            params["query"] = query
+        if fund_id is not None:
             params["fund_id"] = fund_id
-        if provider_id:
-            params["provider_id"] = provider_id
-        if vintage_year_min is not None:
-            params["vintage_year_min"] = vintage_year_min
-        if vintage_year_max is not None:
-            params["vintage_year_max"] = vintage_year_max
+        if reporting_period:
+            params["reporting_period"] = reporting_period
+        if irr_min is not None:
+            params["irr_min"] = irr_min
+        if irr_max is not None:
+            params["irr_max"] = irr_max
+        if dpi_min is not None:
+            params["dpi_min"] = dpi_min
+        if dpi_max is not None:
+            params["dpi_max"] = dpi_max
+        if rvpi_min is not None:
+            params["rvpi_min"] = rvpi_min
+        if rvpi_max is not None:
+            params["rvpi_max"] = rvpi_max
+        if net_multiple_min is not None:
+            params["net_multiple_min"] = net_multiple_min
+        if net_multiple_max is not None:
+            params["net_multiple_max"] = net_multiple_max
+        if net_assets_min is not None:
+            params["net_assets_min"] = net_assets_min
+        if net_assets_max is not None:
+            params["net_assets_max"] = net_assets_max
 
         response = self._http_client.get("/api/v2/fund-performances/", params=params)
         return FundPerformanceListResponse(**response.json())
@@ -529,40 +535,33 @@ class AlternativesPE:
         self,
         limit: int = 100,
         offset: int = 0,
-        order_by: Optional[CommitmentDealOrderBy] = None,
-        order_direction: Optional[OrderDirection] = OrderDirection.ASC,
+        order_by: Union[
+            str, CommitmentDealOrderBy
+        ] = CommitmentDealOrderBy.FUND_MANAGER_NAME,
+        order_direction: Union[str, OrderDirection] = OrderDirection.ASC,
         query: Optional[str] = None,
+        limited_partner_id: Optional[int] = None,
         fund_id: Optional[int] = None,
-        provider_id: Optional[int] = None,
-        commitment_amount_min: Optional[float] = None,
-        commitment_amount_max: Optional[float] = None,
-        commitment_date_from: Optional[str] = None,
-        commitment_date_to: Optional[str] = None,
+        fund_type: Optional[int] = None,
     ) -> CommitmentDealListResponse:
         """Get list of commitment deals."""
         params = {
-            "limit": limit,
+            "limit": min(limit, 100),
             "offset": offset,
+            "order_by": order_by.value if hasattr(order_by, "value") else order_by,
+            "order_direction": order_direction.value
+            if hasattr(order_direction, "value")
+            else order_direction,
         }
 
-        if order_by:
-            params["order_by"] = order_by.value
-        if order_direction:
-            params["order_direction"] = order_direction.value
         if query:
             params["query"] = query
-        if fund_id:
+        if limited_partner_id is not None:
+            params["limited_partner_id"] = limited_partner_id
+        if fund_id is not None:
             params["fund_id"] = fund_id
-        if provider_id:
-            params["provider_id"] = provider_id
-        if commitment_amount_min is not None:
-            params["commitment_amount_min"] = commitment_amount_min
-        if commitment_amount_max is not None:
-            params["commitment_amount_max"] = commitment_amount_max
-        if commitment_date_from:
-            params["commitment_date_from"] = commitment_date_from
-        if commitment_date_to:
-            params["commitment_date_to"] = commitment_date_to
+        if fund_type is not None:
+            params["fund_type"] = fund_type
 
         response = self._http_client.get("/api/v2/commitment-deals/", params=params)
         return CommitmentDealListResponse(**response.json())
@@ -576,39 +575,28 @@ class AlternativesPE:
         self,
         limit: int = 100,
         offset: int = 0,
-        order_by: Optional[PersonOrderBy] = None,
-        order_direction: Optional[OrderDirection] = OrderDirection.ASC,
-        query: Optional[str] = None,
-        provider_id: Optional[int] = None,
-        fund_id: Optional[int] = None,
-        countries: Optional[Union[str, list[CountryCode]]] = None,
-        iso_code: Optional[CountryCode] = None,
+        order_by: Union[str, PersonOrderBy] = PersonOrderBy.ID,
+        order_direction: Union[str, OrderDirection] = OrderDirection.ASC,
+        first_name: Optional[str] = None,
+        last_name: Optional[str] = None,
+        email: Optional[str] = None,
     ) -> PersonListResponse:
         """Get list of people."""
         params = {
-            "limit": limit,
+            "limit": min(limit, 100),
             "offset": offset,
+            "order_by": order_by.value if hasattr(order_by, "value") else order_by,
+            "order_direction": order_direction.value
+            if hasattr(order_direction, "value")
+            else order_direction,
         }
 
-        if order_by:
-            params["order_by"] = order_by.value
-        if order_direction:
-            params["order_direction"] = order_direction.value
-        if query:
-            params["query"] = query
-        if provider_id:
-            params["provider_id"] = provider_id
-        if fund_id:
-            params["fund_id"] = fund_id
-        if countries:
-            if isinstance(countries, list):
-                params["countries"] = ",".join(
-                    c.value if isinstance(c, CountryCode) else c for c in countries
-                )
-            else:
-                params["countries"] = countries
-        if iso_code:
-            params["iso_code"] = iso_code.value
+        if first_name:
+            params["first_name"] = first_name
+        if last_name:
+            params["last_name"] = last_name
+        if email:
+            params["email"] = email
 
         headers = {"Accept": "application/json"}
         response = self._http_client.get(
