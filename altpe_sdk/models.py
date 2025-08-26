@@ -102,23 +102,23 @@ class Company(BaseApiModel):
 class Funding(BaseApiModel):
     """Funding model."""
 
-    investment_quarter: int
+    investment_quarter: int | float
     first_investment_date: str
     last_investment_date: str
-    share_class_id: int
+    share_class_id: int | float
     series: str
     total_funding: float
     post_money_valuation: float
     pre_money_valuation: float
     max_share_price_paid: float
     average_share_price_paid: float
-    total_shares_allocated: int
+    total_shares_allocated: int | float
 
 
 class AdditionalFunding(BaseApiModel):
     """Additional funding model."""
 
-    investment_quarter: int | None = None
+    investment_quarter: int | float | None = None
     investment_date: str | None = None
     series: str
     funding: float
@@ -142,8 +142,8 @@ class Revenue(BaseApiModel):
 
     revenue: float
     ebit: float
-    revenue_quarter: int
-    revenue_year: int
+    revenue_quarter: int | float
+    revenue_year: int | float
 
 
 class Shareholder(BaseApiModel):
@@ -154,11 +154,11 @@ class Shareholder(BaseApiModel):
     investment_date: str
     investor_uen: str | None = None
     current_share_holding_percentage: int | float
-    value_of_investment_at_last_round_valuation: int
+    value_of_investment_at_last_round_valuation: int | float
     sum_amount_invested: float
-    sum_shares_allocated: int
-    sum_shares_sold: int | None = None
-    sum_secondary_shares_purchased: int | None = None
+    sum_shares_allocated: int | float
+    sum_shares_sold: int | float | None = None
+    sum_secondary_shares_purchased: int | float | None = None
 
     @field_validator("sum_shares_sold", "sum_secondary_shares_purchased", mode="before")
     @classmethod
@@ -177,7 +177,7 @@ class FundingRoundAndValuation(BaseApiModel):
     investor_name: str
     investor_uen: str
     amount_invested: int | float
-    shares_allocated: int
+    shares_allocated: int | float
     investment_date: str
     price_per_share: float
 
@@ -185,7 +185,7 @@ class FundingRoundAndValuation(BaseApiModel):
 class PerShareClassSummary(BaseApiModel):
     """Per share class summary model."""
 
-    share_class_id: int
+    share_class_id: int | float
     share_class_name: str
     funding_rounds_and_valuation: list[FundingRoundAndValuation]
 
@@ -207,25 +207,25 @@ class InvestorCompany(BaseApiModel):
     name: str
     uen: str
     description: str
-    total_shares_allocated: int
-    total_shares_sold: int
-    total_secondary_shares: int
+    total_shares_allocated: int | float
+    total_shares_sold: int | float
+    total_secondary_shares: int | float
     total_invested: float
     total_seeds: float
-    amount_invested_series_a: int
-    amount_invested_series_b: int
+    amount_invested_series_a: int | float
+    amount_invested_series_b: int | float
     amount_invested_seed: float
-    amount_invested_pre_seed: int
-    amount_invested_series_c_and_beyond: int
-    amount_invested_preference_ordinary: int
-    amount_invested_ordinary: int
+    amount_invested_pre_seed: int | float
+    amount_invested_series_c_and_beyond: int | float
+    amount_invested_preference_ordinary: int | float
+    amount_invested_ordinary: int | float
     amount_invested_preference: Any | None = None
     max_price_per_share: int | float
-    remaining_shares_after_sold: int
+    remaining_shares_after_sold: int | float
     value_of_investment_at_last_round_valuation: int | float
     value_of_investment_at_last_round_valuation_primary: int | float
-    value_of_investment_at_last_round_valuation_seconday: int
-    remaining_shares_without_secondary_after_sold: int
+    value_of_investment_at_last_round_valuation_seconday: int | float
+    remaining_shares_without_secondary_after_sold: int | float
     sectors: list[Sector]
     themes: list[Theme]
 
@@ -454,7 +454,7 @@ class Fund(BaseApiModel):
     name: str
     fund_manager_id: int | None = None
     fund_manager: str | None = None
-    vintage_year: int | None = None
+    vintage_year: int | float | None = None
     type: FundType | None = None
     single_fund_type: str | None = Field(default=None, alias="singleFundType")
     size: float | None = None
