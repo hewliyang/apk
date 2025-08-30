@@ -1,5 +1,7 @@
 """Configuration for the Alternatives.PE SDK."""
 
+from pathlib import Path
+
 from pydantic import Field
 from pydantic_settings import BaseSettings
 
@@ -14,6 +16,9 @@ class AltPEConfig(BaseSettings):
     )
     timeout: float = Field(default=30.0)
     max_retries: int = Field(default=3)
+    # Optional request/response JSONL logging
+    log_requests: bool = Field(default=False, alias="ALTERNATIVES_PE_LOG_REQUESTS")
+    log_dir: str | Path = Field(default="altpe-logs", alias="ALTERNATIVES_PE_LOG_DIR")
 
     model_config = {
         "env_file": ".env",

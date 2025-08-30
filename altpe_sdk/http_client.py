@@ -1,9 +1,13 @@
 """HTTP client for the Alternatives.PE SDK."""
 
 import asyncio
+import json
 import threading
+from datetime import datetime, timezone
+from pathlib import Path
 from typing import Any
 
+import anyio
 import httpx
 from httpx import Response
 
@@ -41,6 +45,83 @@ class BaseHTTPClient:
             raise ValueError("client_id and client_secret must be provided")
 
         self._token: str | None = None
+        # Optional JSONL logging configuration
+        self._log_enabled: bool = bool(getattr(self.config, "log_requests", False))
+        self._log_dir: Path = Path(
+            getattr(self.config, "log_dir", "altpe-logs")
+        ).expanduser()
+
+    def _redact(self, obj: Any) -> Any:
+        sensitive = {"authorization", "client_secret", "client_id", "token"}
+        if isinstance(obj, dict):
+            return {
+                k: ("***REDACTED***" if k.lower() in sensitive else self._redact(v))
+                for k, v in obj.items()
+            }
+        if isinstance(obj, list):
+            return [self._redact(v) for v in obj]
+        return obj
+
+    def _build_log_entry(
+        self,
+        *,
+        method: str,
+        url: str,
+        params: dict[str, Any] | None,
+        data: dict[str, Any] | None,
+        headers: dict[str, str] | None,
+        response: Response,
+    ) -> dict[str, Any]:
+        timestamp = datetime.now(timezone.utc).isoformat()
+        try:
+            response_json: Any | None = response.json()
+            response_text: str | None = None
+        except Exception:
+            response_json = None
+            response_text = response.text
+
+        return {
+            "timestamp": timestamp,
+            "method": method,
+            "url": url,
+            "request": {
+                "params": self._redact(params or {}),
+                "data": self._redact(data or {}),
+                "headers": self._redact(headers or {}),
+            },
+            "response": {
+                "status_code": response.status_code,
+                "json": self._redact(response_json)
+                if response_json is not None
+                else None,
+                "text": response_text if response_json is None else None,
+            },
+        }
+
+    async def _append_jsonl_async(self, entry: dict[str, Any]) -> None:
+        if not self._log_enabled:
+            return
+        day = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+        log_file = self._log_dir / f"requests-{day}.jsonl"
+        try:
+            await anyio.Path(self._log_dir).mkdir(parents=True, exist_ok=True)
+            async with await anyio.open_file(str(log_file), "a", encoding="utf-8") as f:
+                await f.write(json.dumps(entry, ensure_ascii=False) + "\n")
+        except Exception:
+            # Never let logging failures break core functionality
+            pass
+
+    def _append_jsonl_sync(self, entry: dict[str, Any]) -> None:
+        if not self._log_enabled:
+            return
+        day = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+        log_file = self._log_dir / f"requests-{day}.jsonl"
+        try:
+            self._log_dir.mkdir(parents=True, exist_ok=True)
+            with log_file.open("a", encoding="utf-8") as f:
+                f.write(json.dumps(entry, ensure_ascii=False) + "\n")
+        except Exception:
+            pass
 
     def _handle_response(self, response: Response) -> Response:
         """Handle HTTP response and raise appropriate exceptions."""
@@ -122,6 +203,19 @@ class HTTPClient(BaseHTTPClient):
             if response.status_code == 200:
                 token_response = TokenResponse(**response.json())
                 self._token = token_response.token
+                if self._log_enabled:
+                    await self._append_jsonl_async(
+                        self._build_log_entry(
+                            method="POST",
+                            url="/api/v2/oauth/token",
+                            params=None,
+                            data=data,
+                            headers={
+                                "Content-Type": "application/x-www-form-urlencoded"
+                            },
+                            response=response,
+                        )
+                    )
                 return self._token
             elif response.status_code == 422:
                 raise AuthenticationError("Invalid client credentials")
@@ -153,7 +247,17 @@ class HTTPClient(BaseHTTPClient):
             json=data,
             headers=request_headers,
         )
-
+        if self._log_enabled:
+            await self._append_jsonl_async(
+                self._build_log_entry(
+                    method=method,
+                    url=url,
+                    params=params,
+                    data=data,
+                    headers=request_headers,
+                    response=response,
+                )
+            )
         return self._handle_response(response)
 
     async def get(
@@ -251,6 +355,19 @@ class SyncHTTPClient(BaseHTTPClient):
             if response.status_code == 200:
                 token_response = TokenResponse(**response.json())
                 self._token = token_response.token
+                if self._log_enabled:
+                    self._append_jsonl_sync(
+                        self._build_log_entry(
+                            method="POST",
+                            url="/api/v2/oauth/token",
+                            params=None,
+                            data=data,
+                            headers={
+                                "Content-Type": "application/x-www-form-urlencoded"
+                            },
+                            response=response,
+                        )
+                    )
                 return self._token
             elif response.status_code == 422:
                 raise AuthenticationError("Invalid client credentials")
@@ -282,7 +399,17 @@ class SyncHTTPClient(BaseHTTPClient):
             json=data,
             headers=request_headers,
         )
-
+        if self._log_enabled:
+            self._append_jsonl_sync(
+                self._build_log_entry(
+                    method=method,
+                    url=url,
+                    params=params,
+                    data=data,
+                    headers=request_headers,
+                    response=response,
+                )
+            )
         return self._handle_response(response)
 
     def get(
